@@ -1,5 +1,5 @@
 setClass(
-  "basis_hybridPLS",
+  "predictor_functional",
   representation(
     #for basis expansion representation
     coef = "matrix", # n x M matrix of basis coefficients. each row represents an observed function.
@@ -10,7 +10,7 @@ setClass(
     J_dotdot = "matrix" # gram matrix for second derivative
   ))
 
-create_basis_hybridPLS <- function(coef, J, J_dotdot){
-  basis_object <- new("basis_hybridPLS", coef = coef, J = J, J_half = .get_J_half(J), J_dotdot = J_dotdot)
+create_predictor_functional <- function(coef, J, J_dotdot){
+  basis_object <- new("predictor_functional", coef = coef, J = J, J_half = .get_J_half(J), J_dotdot = J_dotdot)
   return(basis_object)
 }
