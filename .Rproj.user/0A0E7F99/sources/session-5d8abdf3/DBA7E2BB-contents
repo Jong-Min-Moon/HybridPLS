@@ -4,7 +4,7 @@ setMethod("is_same", "basis_hybridPLS",
 function(input, other) {
             # basis check
 if (
-  prod( (input@J != other@J)) * prod(input@J_dotdot != other@J_dotdot) > 0
+  prod( (input@basis_1)@J != (other@basis_1)@J ) * prod(input@J_2 != other@J_2) > 0
 ){
   return(FALSE)
   warning("Different bases")
