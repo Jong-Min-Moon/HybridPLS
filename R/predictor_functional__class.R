@@ -11,6 +11,6 @@ setClass(
   ))
 
 create_predictor_functional <- function(coef, J, J_dotdot){
-  basis_object <- new("predictor_functional", coef = coef, J = J, J_half = .get_J_half(J), J_dotdot = J_dotdot)
-  return(basis_object)
+  predictor_object <- new("predictor_functional", coef = coef, J = J, J_half = .get_J_half(J), J_dotdot = J_dotdot)
+  return(predictor_object)
 }

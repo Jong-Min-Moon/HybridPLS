@@ -1,11 +1,11 @@
-setMethod("add", "hybrid_predictors_kidney",
+setMethod("add", "predictor_hybrid",
 ###########################################
 
 function(input, other, alpha = 1) {
 # can add only when the bases are the same
   if (
     !(
-      is_same(input@basis_1, other@basis_1) & is_same(input@basis_2, other@basis_2)
+      is_same_basis(input@functional, other@basis_1) & is_same(input@basis_2, other@basis_2)
       )
   ){
     stop("Cannot add predictors with different bases")

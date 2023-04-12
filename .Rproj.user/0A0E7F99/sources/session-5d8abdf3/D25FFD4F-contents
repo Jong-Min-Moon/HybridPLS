@@ -1,10 +1,13 @@
-setMethod("is_same", "basis_hybridPLS",
+setMethod("is_same_basis", "predictor_functional",
 ###########################################
 
 function(input, other) {
-            # basis check
 if (
-  prod( (input@J != other@J)) * prod(input@J_dotdot != other@J_dotdot) > 0
+  !(
+    prod(
+      (input@J == other@J) * (input@J_dotdot == other@J_dotdot)
+    )
+  )
 ){
   return(FALSE)
   warning("Different bases")

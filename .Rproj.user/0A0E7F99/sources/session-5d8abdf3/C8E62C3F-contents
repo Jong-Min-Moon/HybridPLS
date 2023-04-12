@@ -13,25 +13,27 @@ setClass(
     # functional predictors
     ## basis expansion representation
     ## number of predictors can be arbitrary
-    functional_predictors = "list"
+    predictor_functional_list = "list",
+    n_predictor_functional = "numeric"
   ))
 
-create_hybrid_predictors_kidney <- function(Z, functional_predictor_1, functional_predictor_2){
+create_hybrid_predictors_kidney <- function(Z, predictor_functional_1, predictor_functional_2){
 if(
   !(
-    class(functional_predictor_1)[1] == "predictor_functional"
+    class(predictor_functional_1)[1] == "predictor_functional"
     ) & (
-      class(functional_predictor_2)[1] == "predictor_functional"
+      class(predictor_functional_2)[1] == "predictor_functional"
       )
 ){
   stop("Inputs should be functional predictor objects")
 }else{
   predictor_object <- new("predictor_hybrid",
                           Z = Z,
-                          functional_predictors = list(
-                            functional_predictor_1,
-                            functional_predictor_2
-                            )
+                          predictor_functional_list = list(
+                            predictor_functional_1,
+                            predictor_functional_2
+                            ),
+                          n_predictor_functional = 2
                           )
   return(predictor_object)
   }

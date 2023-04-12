@@ -13,7 +13,8 @@ setClass(
     # functional predictors
     ## basis expansion representation
     ## number of predictors can be arbitrary
-    functional_predictors = "list"
+    functional_predictors = "list",
+    n_functional_predictors = "numeric"
   ))
 
 create_hybrid_predictors_kidney <- function(Z, functional_predictor_1, functional_predictor_2){
@@ -31,7 +32,8 @@ if(
                           functional_predictors = list(
                             functional_predictor_1,
                             functional_predictor_2
-                            )
+                            ),
+                          n_functional_predictors = 2
                           )
   return(predictor_object)
   }
