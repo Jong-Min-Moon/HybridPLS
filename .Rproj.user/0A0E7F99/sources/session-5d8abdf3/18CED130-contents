@@ -31,3 +31,9 @@ A.mat + B.mat #verify
 predictor_1@predictor_functional_list[[1]]
 predictor_2@predictor_functional_list[[1]]
 add(predictor_1, predictor_2)@predictor_functional_list[[1]]
+
+predictor_1@predictor_functional_list[[1]]
+predictor_2@predictor_functional_list[[1]]
+sub(predictor_1, predictor_2)@predictor_functional_list[[1]]
+
+
