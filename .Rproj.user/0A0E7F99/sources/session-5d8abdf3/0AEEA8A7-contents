@@ -1,4 +1,0 @@
-create_basis_hybridPLS <- function(coef, J, J_dotdot){
-  basis_object <- new("basis_hybridPLS", coef = coef, J = J, J_half = .get_J_half(J), J_dotdot = J_dotdot)
-  return(basis_object)
-}

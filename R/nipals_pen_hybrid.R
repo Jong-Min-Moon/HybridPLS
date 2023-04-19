@@ -5,25 +5,34 @@
 #   L = number of iterations
 #   kappa = hyperparameter
 #   tau = hyperparmeter
-
+#
+# outputs:
+# rho = pls score (=random variable created by inner producting)
+# delta = predictor basis
+# nu = response basis
+# xi = pls component
 nipals_pen_hybrid <- function(W, y, L, kappa, tau) {
 
   # initialize the storage
-  sigma <- list()
-  delta <- list()
-  xi <- list()
-  rho <- list()
-  nu <- list()
+  rho <- delta <- nu <- xi <- sigma <- list()
+
+
+
+   <- list()
   E <- list()
   V_star <- list()
   eigen_val <- list()
-  first_eigen_val <- rep(NA, L)
   fitted_value_W <- list()
   fitted_value_y <- list()
   resid_y <- list()
+  W_now <- list()
+
+  first_eigen_val <- rep(NA, L)
+
+
   mse_W <- rep(NA, L)
   mse_y <- rep(NA, L)
-  W_now <- list()
+
 
   # extract necessary numbers and matrices
   #   gram matrices are the same throughout the loop
@@ -45,9 +54,10 @@ nipals_pen_hybrid <- function(W, y, L, kappa, tau) {
   y_now <- y
   for (l in 1:L) {
     cat(paste("#############################################", "\n"))
+    cat(paste(l, "th iteration", "\n"))
 
     # STEP 1. calculate pls score
-    cat(paste(l, "th iteration", "\n"))
+
     pls_pen_result <- pls_pen(W_now[[l]], y_now, L_mat)
     xi[[l]] <- pls_pen_result$xi # pls component. Section 3.2
     rho[[l]] <- hybrid_inner_prod(W_now[[l]], xi[[l]]) # n * 1 pls score. Step 1 in page 4.
@@ -88,6 +98,13 @@ nipals_pen_hybrid <- function(W, y, L, kappa, tau) {
     first_eigen_val[l] <- eigen_val[[l]][1]
 
   }# for loop: l
+
+
+
+
+
+
+
   pls_object <- new("hybrid_pls_kidney",
                     eta = eta,
                     xi = xi,
