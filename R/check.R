@@ -19,8 +19,8 @@ kidney_obj <- read_fd_kidney(
 
 
 # W is already centered
-W_train_centered <- kidney$W_train
-y_train <- kidney$y_train
+W_train_centered <- kidney_obj$W_train
+y_train <- kidney_obj$y_train
 
 # minmax scale and logit transform and centering
 y_train_min <- min(y_train)
