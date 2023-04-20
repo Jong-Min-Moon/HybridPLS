@@ -1,6 +1,6 @@
 
 
-par(mfrow=c(2,4))
+par(mfrow=c(1,1))
 # scale=True, seed = 1 ----------------------------------------------------
 
 seed = 1
@@ -34,8 +34,8 @@ y_train_logit_centered <- y_train_logit - y_train_logit_mean
 
 
 # test data set
-W_test_centered <- kidney$W_test
-y_test <- kidney$y_test
+W_test_centered <- kidney_obj$W_test
+y_test <- kidney_obj$y_test
 
 
 #MSE trend
@@ -73,7 +73,7 @@ set.seed(seed) # for training/test split
 L_max = 20
 
 
-kidney <- read_fd_kidney(
+kidney_obj <- read_fd_kidney_obj(
   dir = "~/GitHub/fingernail/data/renogram_data.csv",
   response_function = response_mean_diagnosis,
   training_ratio = 0.7,
@@ -82,8 +82,8 @@ kidney <- read_fd_kidney(
 )
 
 # W is already centered
-W_train_centered <- kidney$W_train
-y_train <- kidney$y_train
+W_train_centered <- kidney_obj$W_train
+y_train <- kidney_obj$y_train
 
 # minmax scale and logit transform and centering
 y_train_min <- min(y_train)
@@ -97,8 +97,8 @@ y_train_logit_centered <- y_train_logit - y_train_logit_mean
 
 
 # test data set
-W_test_centered <- kidney$W_test
-y_test <- kidney$y_test
+W_test_centered <- kidney_obj$W_test
+y_test <- kidney_obj$y_test
 
 
 #MSE trend
@@ -135,7 +135,7 @@ set.seed(seed) # for training/test split
 L_max = 20
 
 
-kidney <- read_fd_kidney(
+kidney_obj <- read_fd_kidney(
   dir = "~/GitHub/fingernail/data/renogram_data.csv",
   response_function = response_mean_diagnosis,
   training_ratio = 0.7,

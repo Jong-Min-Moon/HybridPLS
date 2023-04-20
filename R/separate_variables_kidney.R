@@ -23,9 +23,7 @@ separate_variables_kidney <- function(
 
 
   # 2. separate variables
-  training_idx <- sample(n_sample, floor(training_ratio * n_sample))
-  y_test <-  y[-training_idx]
-  n_samples_test <- length(y_test)
+
 
   for (i in 1:n_sample){
     ID <- list_ID[i] # one object
@@ -41,6 +39,10 @@ separate_variables_kidney <- function(
     y[i] <- response_function(data_observation) #response function is an input variable, so we can change this
   }
 
+  training_idx <- sample(n_sample, floor(training_ratio * n_sample))
+  y_test <-  y[-training_idx]
+  print(y_test)
+  n_samples_test <- length(y_test)
 
 
   # 3. save some info

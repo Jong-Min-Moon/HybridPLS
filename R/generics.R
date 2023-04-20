@@ -60,7 +60,7 @@ setGeneric(
 
 setGeneric(
   "get_Lambda",
-  function(W, kappa) standardGeneric("get_Lambda")
+  function(W, lambda) standardGeneric("get_Lambda")
 )
 
 setGeneric(
@@ -87,4 +87,9 @@ setGeneric(
 setGeneric(
   "index_sample",
   function(W, i) standardGeneric("index_sample")
+  )
+
+setGeneric(
+  "predict_test",
+  function(pls_object, W_test) standardGeneric("predict_test")
   )

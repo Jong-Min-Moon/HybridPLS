@@ -3,7 +3,7 @@
 #   W = centered predictor
 #   y = response
 #   L = number of iterations
-#   kappa = hyperparameter
+#   lambda = hyperparameter
 #   tau = hyperparmeter
 #
 # outputs:
@@ -11,7 +11,7 @@
 # delta = predictor basis
 # nu = response basis
 # xi = pls component
-nipals_pen_hybrid <- function(W, y, L, kappa, tau) {
+nipals_pen_hybrid <- function(W, y, L, lambda, tau) {
 
   # 1. initialize the storage
   rho <- delta <- nu <- xi <- sigma <- list()
@@ -30,7 +30,7 @@ nipals_pen_hybrid <- function(W, y, L, kappa, tau) {
   J_dotdot_star <- get_J_dotdot_star(W)
 
   ## 2.2. Create L_mat which imposes smoothness regularization to the objective function
-  Lambda <- get_Lambda(W, kappa)
+  Lambda <- get_Lambda(W, lambda)
   J_Lambda_Jpp <-  J_star + (Lambda %*% J_dotdot_star) # denominator in the equation (6)
   L_mat <- t(chol(J_Lambda_Jpp))
 
