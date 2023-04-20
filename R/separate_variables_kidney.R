@@ -56,7 +56,7 @@ separate_variables_kidney <- function(
   training_idx <- sample(n_sample, floor(training_ratio * n_sample))
 
   ## 4.1. Normalize the renogram curves, for both of training and test dataset
-  if (normalize$curves){
+  if (normalize$curve){
     for (i in 1:n_sample){
       max_base <- max(reno_base[i, ])
       reno_base[i, ] <- reno_base[i, ] / max_base

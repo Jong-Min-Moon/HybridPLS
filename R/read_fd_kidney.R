@@ -9,7 +9,7 @@ read_fd_kidney <- function(
   kidney_variables <- separate_variables_kidney(
     response_function,
     training_ratio,
-    list(normalize$curve, normalize$scalar)
+    list("curve" = normalize$curve, "scalar" = normalize$scalar)
     )
 
 
