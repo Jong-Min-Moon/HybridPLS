@@ -21,19 +21,18 @@ function(W, y, L){
   e <- eigen_result$vectors[, 1]
   #e <- e / Matrix::norm(e, "2") #normalize; omit this by request of Dr. Jang
 
-
   xi_star <- solve(t(L), e) # t(L) xi* = e
   xi_hat <- hybrid_from_coef(format = W, xi_star = xi_star)
 
 
   return(
-              list(
-                xi = xi_hat,
-                E = E,
-                V_star = V_star,
-                eigen_val = eigen_result$values
-              )
-            )
+    list(
+      xi = xi_hat,
+      E = E,
+      V_star = V_star,
+      eigen_val = eigen_result$values
+      )
+    )
 
 }
 
