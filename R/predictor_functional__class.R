@@ -5,9 +5,9 @@ setClass(
     coef = "matrix", # n x M matrix of basis coefficients. each row represents an observed function.
 
     #gram matrices. Bases are only used in the form of Gram matrix.
-    J = "matrix", #original gram matrix
-    J_half = "matrix", # matrix square root of the gram matrix
-    J_dotdot = "matrix" # gram matrix for second derivative
+    J = "matrix", #original gram matrix (M x M)
+    J_half = "matrix", # matrix square root of the gram matrix (M x M)
+    J_dotdot = "matrix" # gram matrix for second derivative (M x M)
   ))
 
 create_predictor_functional <- function(coef, J, J_dotdot){

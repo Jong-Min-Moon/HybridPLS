@@ -2,6 +2,8 @@
 setGeneric("is_same_basis", function(input, other)
   standardGeneric("is_same_basis"))
 
+setGeneric("get_norm_sqrd", function(input)
+  standardGeneric("get_norm_sqrd"))
 
 
 setGeneric("add", function(input, other, alpha=1)
