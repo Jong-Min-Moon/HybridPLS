@@ -5,9 +5,8 @@ function(input){
   n <- dim(input@coef)[1] #sample size
   norm_sqrd <- 0
   for (i in 1:n){
-    coef_now <- input@coef[i,]
-    coef_sqrd <- coef_now %*% coef_now
-    norm_sqrd <- norm_sqrd + (
+    coef_now <- matrix(input@coef[i,], nrow = 1)
+    norm_sqrd <- norm_sqrd + sum(
       (t(coef_now) %*% coef_now) * input@J
       )
   }

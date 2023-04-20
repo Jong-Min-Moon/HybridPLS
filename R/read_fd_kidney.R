@@ -13,25 +13,29 @@ read_fd_kidney <- function(
     )
 
 
-    result <- list(
-      #training data
-      y_train = kidney_variables$training_set$y,
-      W_train = turn_into_hybrid_kidney(kidney_variables$training_set, n_basis),
-      W_train_mean = turn_into_hybrid_kidney(kidney_variables$training_mean, n_basis),
+  result <- list()
+  cat("Training data:\n")
+  result$"y_train" = kidney_variables$training_set$y
+  result$"W_train" = turn_into_hybrid_kidney(kidney_variables$training_set, n_basis)
 
-      #test data
-      y_test = kidney_variables$test_set$y,
-      W_test = turn_into_hybrid_kidney(kidney_variables$test_set, n_basis)
-    )
+  cat("Training data (mean function):\n")
+  result$"W_train_mean" = turn_into_hybrid_kidney(kidney_variables$training_mean, n_basis)
 
-    if (normalize$between){
-      X_1_star <- result$W_train@predictor_functional_list[[1]]
-      X_2_star <- result$W_train@predictor_functional_list[[2]]
-      Z_s <- result$W_train@Z
-      omega <- (get_norm_sqrt(X_1_star) + get_norm_sqrt(X_2_star))/ sum((Z_s)^2)
+  cat("Test data:\n")
+  result$"y_test" = kidney_variables$test_set$y
+  result$"W_test" = turn_into_hybrid_kidney(kidney_variables$test_set, n_basis)
 
-      #  Scale the scalar predictors so that the variability between the functional and scalar predictors are comparable:
-      result$W_train@Z <- sqrt(omega) * (result$W_train@Z)
-      result$W_test@Z <- sqrt(omega) * (result$W_test@Z)
+
+  if (normalize$between){
+    cat("Scale the scalar predictors so that the variability between the functional and scalar predictors are comparable:")
+    X_1_star <- result$W_train@predictor_functional_list[[1]]
+    X_2_star <- result$W_train@predictor_functional_list[[2]]
+    Z_s <- result$W_train@Z
+    omega <- (get_norm_sqrd(X_1_star) + get_norm_sqrd(X_2_star))/ sum((Z_s)^2)
+
+    result$W_train@Z <- sqrt(omega) * (result$W_train@Z)
+    result$W_test@Z <- sqrt(omega) * (result$W_test@Z)
     }
+
+    return(result)
 }

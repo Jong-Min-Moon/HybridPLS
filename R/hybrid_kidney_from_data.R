@@ -8,8 +8,11 @@ hybrid_kidney_from_data <- function(
     scalar_predictors,
     n_basis
 ){
-  split_fit_base <- .fit_spline(argvals = argvals_base, evals = reno_base, n_basis = n_basis)
-  split_fit_post <- .fit_spline(argvals = argvals_post, evals = reno_post, n_basis = n_basis)
+  cat(paste("\t For base curves, "))
+  split_fit_base <- fit_spline(argvals = argvals_base, evals = reno_base, n_basis = n_basis)
+
+  cat(paste("\t For post curves, "))
+  split_fit_post <- fit_spline(argvals = argvals_post, evals = reno_post, n_basis = n_basis)
 
   predictor_functional_1 <- create_predictor_functional(
     split_fit_base$C,

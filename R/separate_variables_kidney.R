@@ -23,6 +23,10 @@ separate_variables_kidney <- function(
 
 
   # 2. separate variables
+  training_idx <- sample(n_sample, floor(training_ratio * n_sample))
+  y_test <-  y[-training_idx]
+  n_samples_test <- length(y_test)
+
   for (i in 1:n_sample){
     ID <- list_ID[i] # one object
     data_observation <- kidney[kidney$ID == ID,] #data of one object
@@ -51,9 +55,6 @@ separate_variables_kidney <- function(
 
   # 4. Data processing
   ## procedure follows the pdf file "Data Processing.pdf"
-
-  ## training dataset
-  training_idx <- sample(n_sample, floor(training_ratio * n_sample))
 
   ## 4.1. Normalize the renogram curves, for both of training and test dataset
   if (normalize$curve){
@@ -107,8 +108,7 @@ separate_variables_kidney <- function(
 
   # 5. save results
 
-  y_test <-  y[-training_idx]
-  n_samples_test <- length(y_test)
+
 
 
   # mean function for training

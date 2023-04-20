@@ -1,6 +1,6 @@
 library(Matrix)
-library(MASS)
-library(pracma)
+library(MASS) #ginv
+library(pracma) #trapz
 library(jpeg)
 library(fda)
-
+library(splines2)

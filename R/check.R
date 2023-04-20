@@ -10,7 +10,7 @@ set.seed(seed) # for training/test split
 L_max = 20
 
 
-kidney <- read_fd_kidney(
+kidney_obj <- read_fd_kidney(
   response_function = response_mean_diagnosis,
   training_ratio = 0.7,
   n_basis = 20,
