@@ -3,6 +3,10 @@
 # input:
 # W
 # lambda: K-dimensional vector
+#
+# transition from scalar kappa to vector lambda (created October 27th 2022)
+#
+
 setMethod("get_Lambda", signature("predictor_hybrid", "numeric"),
 #################################################################
 

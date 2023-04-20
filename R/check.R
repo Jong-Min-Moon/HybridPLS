@@ -8,7 +8,7 @@ set.seed(seed) # for training/test split
 
 #set the number of max iterations
 L_max = 20
-
+lambda = c(1e-6,5*1e-6)
 
 kidney_obj <- read_fd_kidney(
   response_function = response_mean_diagnosis,
@@ -43,7 +43,7 @@ y_test <- kidney_obj$y_test
 L_trend_0_logit <- rep(NA, L_max)
 for(L in 1:L_max){
   pls_model_transform <- nipals_pen_hybrid(
-    W_train_centered, y_train_logit_centered, L, c(1e-6,5*1e-6), 0)
+    W_train_centered, y_train_logit_centered, L, lambda, 0)
 
   #inverse transform
   y_pred_pls <- predict_test(pls_model_transform, W_test_centered)
