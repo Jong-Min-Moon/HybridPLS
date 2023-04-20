@@ -25,4 +25,23 @@ setGeneric(
   function(W, y) standardGeneric("get_V_star")
   )
 
+setGeneric(
+  "get_J_star",
+  function(W) standardGeneric("get_J_star")
+  )
+
+setGeneric(
+  "get_J_dotdot_star",
+  function(W) standardGeneric("get_J_dotdot_star")
+)
+
+setGeneric(
+  "get_Lambda",
+  function(W, kappa) standardGeneric("get_Lambda")
+)
+
+setGeneric(
+  "hybrid_from_coef",
+  function(format, xi_star) standardGeneric("hybrid_from_coef")
+  )
 

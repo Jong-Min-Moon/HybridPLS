@@ -13,39 +13,24 @@
 # xi = pls component
 nipals_pen_hybrid <- function(W, y, L, kappa, tau) {
 
-  # initialize the storage
+  # 1. initialize the storage
   rho <- delta <- nu <- xi <- sigma <- list()
+  E <- V_star <- eigen_val <-list()
+  fitted_value_W <- fitted_value_y <-list()
+  resid_y <- W_now <- list() #data for iteration
+  first_eigen_val <- mse_W <- mse_y <-rep(NA, L)
 
 
 
-   <- list()
-  E <- list()
-  V_star <- list()
-  eigen_val <- list()
-  fitted_value_W <- list()
-  fitted_value_y <- list()
-  resid_y <- list()
-  W_now <- list()
 
-  first_eigen_val <- rep(NA, L)
-
-
-  mse_W <- rep(NA, L)
-  mse_y <- rep(NA, L)
-
-
-  # extract necessary numbers and matrices
-  #   gram matrices are the same throughout the loop
+  # 2. extract necessary numbers and matrices
+  ## 2.1.  gram matrices are the same throughout the loop
   p <- dim(W@Z)[2] #number of scalar predictors
-  J_star <- bdiag(W@J_1, W@J_2, diag(p))
+  J_star <- get_J_star(W)
+  J_dotdot_star <- get_J_dotdot_star(W)
 
-  J_dotdot_star <- bdiag(W@J_dotdot_1, W@J_dotdot_2, matrix(0, nrow = p, ncol = p))
-
-  Lambda <- bdiag(
-    kappa[1] * diag(dim(W@J_1)[2]),
-    kappa[2] * diag(dim(W@J_2)[2]),
-    matrix(0, nrow = p, ncol = p)
-  )
+  ## 2.2. Create L_mat which imposes smoothness regularization to the objective function
+  Lambda <- get_Lambda(W, kappa)
   J_Lambda_Jpp <-  J_star + (Lambda %*% J_dotdot_star) # denominator in the equation (6)
   L_mat <- t(chol(J_Lambda_Jpp))
 
