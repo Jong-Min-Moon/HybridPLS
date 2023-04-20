@@ -56,7 +56,7 @@ nipals_pen_hybrid <- function(W, y, L, kappa, tau) {
     # update W
     delta[[l]] <- LSE_hybrid(W_now[[l]], rho[[l]], tau) #regression coef (W on rho)
     fitted_value_W[[l]] <- fitted_value(W_now[[l]], delta[[l]], rho[[l]])
-    W_now[[l+1]] <- sub(W_now[[l]], fitted_value_W[[l]])
+    W_now[[l+1]] <- subtr(W_now[[l]], fitted_value_W[[l]])
 
     #check mean norm
     mse_W[l] <- mean_norm(W_now[[l]])
@@ -71,7 +71,7 @@ nipals_pen_hybrid <- function(W, y, L, kappa, tau) {
       eta <- scalar_mul(sigma[[l]], nu[[l]])
     }else{
       for (u in 1:(l - 1)){
-        sigma[[l]] <- sub( sigma[[l]], sigma[[u]], hybrid_inner_prod(delta[[u]], xi[[l]]) )
+        sigma[[l]] <- subtr( sigma[[l]], sigma[[u]], hybrid_inner_prod(delta[[u]], xi[[l]]) )
       } #for loop: u
       eta <- add(eta, sigma[[l]], nu[[l]])
     }#if statement

@@ -12,7 +12,10 @@ function(W, kappa){
     n_basis_now <- dim(W@predictor_functional_list[[i]]@J)[2]
     Lambda <- bdiag(Lambda, diag(n_basis_now))
     }
-  Lambda <- matrix(0, nrow = p, ncol = p)
+  Lambda <- bdiag(
+    Lambda,
+    matrix(0, nrow = p, ncol = p)
+  )
   }
 
 #######################################
