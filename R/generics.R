@@ -33,10 +33,7 @@ setGeneric(
   function(input, rho) standardGeneric("LSE_ptws")
   )
 
-setGeneric(
-  "LSE_hybrid",
-  function(W, rho, tau) standardGeneric("LSE_hybrid")
-  )
+
 
 setGeneric(
   "pls_pen",

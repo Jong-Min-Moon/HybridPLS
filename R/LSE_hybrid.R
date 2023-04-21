@@ -1,3 +1,8 @@
+setGeneric(
+  "LSE_hybrid",
+  function(W, rho, tau) standardGeneric("LSE_hybrid")
+)
+
 setMethod("LSE_hybrid", "predictor_hybrid",
 ###########################################
 
@@ -24,5 +29,6 @@ function(W, rho, tau) {
   delta_hat <- hybrid_from_coef(W, d_hat_star)
   return(delta_hat)
 }
+
 #########################################
 )
