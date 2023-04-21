@@ -17,3 +17,11 @@ Depends:
   jpeg,
   fda,
   splines2
+
+Imports: 
+  Matrix,
+  MASS,
+  pracma,
+  jpeg,
+  fda,
+  splines2
