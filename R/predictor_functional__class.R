@@ -1,3 +1,11 @@
+
+library(Matrix)
+library(MASS)
+library(pracma)
+library(jpeg)
+library(fda)
+library(splines2)
+
 setClass(
   "predictor_functional",
   representation(

@@ -1,3 +1,11 @@
+library(Matrix)
+library(MASS)
+library(pracma)
+library(jpeg)
+library(fda)
+library(splines2)
+
+
 # n: number of observations
 # p: number of scalar predictors
 # M: number of basis functions for each functional predictors

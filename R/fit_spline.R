@@ -1,3 +1,10 @@
+library(Matrix)
+library(MASS)
+library(pracma)
+library(jpeg)
+library(fda)
+library(splines2)
+
 fit_spline <- function(argvals, evals, n_basis){
 
   # create 1d b-spline basis functions

@@ -1,3 +1,11 @@
+library(Matrix)
+library(MASS)
+library(pracma)
+library(jpeg)
+library(fda)
+library(splines2)
+
+
 separate_variables_kidney <- function(
     response_function,
     training_ratio,

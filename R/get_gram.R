@@ -1,3 +1,11 @@
+library(Matrix)
+library(MASS)
+library(pracma)
+library(jpeg)
+library(fda)
+library(splines2)
+
+
 get_gram <- function(argval, basis_evals){
   n_basis <- dim(basis_evals)[2]
   J <- matrix(nrow= n_basis, ncol = n_basis)

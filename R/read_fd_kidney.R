@@ -1,3 +1,12 @@
+library(Matrix)
+library(MASS)
+library(pracma)
+library(jpeg)
+library(fda)
+library(splines2)
+
+
+
 ################# Read functions for kidney data ###################
 
 read_fd_kidney <- function(

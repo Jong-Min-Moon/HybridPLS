@@ -1,3 +1,11 @@
+library(Matrix)
+library(MASS)
+library(pracma)
+library(jpeg)
+library(fda)
+library(splines2)
+
+
 turn_into_hybrid_kidney <- function(variables_kidney, n_basis){
   return(
     hybrid_kidney_from_data(
