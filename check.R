@@ -1,10 +1,8 @@
 
-
+library(HybridPLS)
 par(mfrow=c(2,2))
 y_limit = c(0.04, 0.15)
 min_mse <- rep(NA, 4)
-# scale=True, seed = 1 ----------------------------------------------------
-
 
 
 # 1. No scaling
