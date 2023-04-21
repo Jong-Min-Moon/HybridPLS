@@ -177,9 +177,9 @@ setMethod("LSE_hybrid", "predictor_hybrid",
             # matrices in the statement of Proposition 4
             J_star <-get_J_star(W)
             J_dotdot_star <- get_J_dotdot_star(W)
-            convex_J <- as.matrix((norm(rho, type="2"))^2 * J_star + tau * J_dotdot_star)
-            d_hat_star <- t(
-              solve( t(convex_J), t(rho_t_C_star_J_star) )
+            convex_J <- (norm(rho, type="2"))^2 * J_star + tau * J_dotdot_star
+            d_hat_star <- Matrix::t(
+              solve( Matrix::t(convex_J), Matrix::t(rho_t_C_star_J_star) )
             )
             delta_hat <- hybrid_from_coef(W, d_hat_star)
             return(delta_hat)
