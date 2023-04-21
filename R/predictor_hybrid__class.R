@@ -481,7 +481,7 @@ setClass(
     V_star = "list",
     eigen_val = "list",
     first_eigen_val = "vector",
-    J_Lambda_Jpp = "matrix",
+    J_Lambda_Jpp = "dgCMatrix",
     L_mat= "matrix",
     resid_y = "list",
     mse_W = 'vector',
