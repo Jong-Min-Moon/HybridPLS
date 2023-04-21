@@ -1,11 +1,11 @@
 fit_spline <- function(argvals, evals, n_basis){
 
   # create 1d b-spline basis functions
-  PhiB <- bSpline(argvals, df=n_basis, degree = 3, intercept = TRUE) #Jt X M B spline Basis
+  PhiB <- splines2::bSpline(argvals, df=n_basis, degree = 3, intercept = TRUE) #Jt X M B spline Basis
   cat(paste("use", n_basis, "basis functions\n"))
 
   # calculate basis coefficients for observed functional data
-  C <- t(ginv(PhiB) %*% t(evals))
+  C <- t(MASS::ginv(PhiB) %*% t(evals))
 
   # calculate gram matrices for
   # - basis functions (J)

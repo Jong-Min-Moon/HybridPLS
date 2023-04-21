@@ -298,9 +298,9 @@ setMethod("get_J_star", signature("predictor_hybrid"),
             p <- dim(W@Z)[2]
             J_star <- W@predictor_functional_list[[1]]@J
             for (i in 2:(W@n_predictor_functional)){
-              J_star <- bdiag(J_star, W@predictor_functional_list[[i]]@J)
+              J_star <- Matrix::bdiag(J_star, W@predictor_functional_list[[i]]@J)
             }
-            J_star <- bdiag(J_star, diag(p))
+            J_star <- Matrix::bdiag(J_star, diag(p))
             return(J_star)
           }
 
@@ -316,9 +316,9 @@ setMethod("get_J_dotdot_star", signature("predictor_hybrid"),
             p <- dim(W@Z)[2]
             J_dotdot_star <- W@predictor_functional_list[[1]]@J_dotdot
             for (i in 2:(W@n_predictor_functional)){
-              J_dotdot_star <- bdiag(J_dotdot_star, W@predictor_functional_list[[i]]@J_dotdot)
+              J_dotdot_star <- Matrix::bdiag(J_dotdot_star, W@predictor_functional_list[[i]]@J_dotdot)
             }
-            J_dotdot_star <- bdiag(J_dotdot_star, matrix(0, nrow = p, ncol = p))
+            J_dotdot_star <- Matrix::bdiag(J_dotdot_star, matrix(0, nrow = p, ncol = p))
             return(J_dotdot_star)
           }
 
@@ -337,9 +337,9 @@ setMethod("get_Lambda", signature("predictor_hybrid", "numeric"),
             Lambda <- lambda[1] * diag(n_basis_1)
             for (i in 2:(W@n_predictor_functional)){
               n_basis_now <- dim(W@predictor_functional_list[[i]]@J)[2]
-              Lambda <- bdiag(Lambda, lambda[i] * diag(n_basis_now))
+              Lambda <- Matrix::bdiag(Lambda, lambda[i] * diag(n_basis_now))
             }
-            Lambda <- bdiag(
+            Lambda <- Matrix::bdiag(
               Lambda,
               matrix(0, nrow = p, ncol = p)
             )
