@@ -19,3 +19,35 @@ create_predictor_functional <- function(coef, J, J_dotdot){
                           )
   return(predictor_object)
 }
+
+setMethod("get_norm_sqrd", "predictor_functional",
+          ###########################################
+
+          function(input){
+            n <- dim(input@coef)[1] #sample size
+            norm_sqrd <- 0
+            for (i in 1:n){
+              coef_now <- matrix(input@coef[i,], nrow = 1)
+              norm_sqrd <- norm_sqrd + sum(
+                (t(coef_now) %*% coef_now) * input@J
+              )
+            }
+            return(norm_sqrd)
+          }
+
+          ###########################################
+)
+
+
+
+
+
+# get_Lambda
+#
+# input:
+# W
+# lambda: K-dimensional vector
+#
+# transition from scalar kappa to vector lambda (created October 27th 2022)
+#
+
