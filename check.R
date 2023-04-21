@@ -1,3 +1,4 @@
+devtools::install_github("Jong-Min-Moon/HybridPLS", force=TRUE)
 
 library(HybridPLS)
 par(mfrow=c(2,2))
