@@ -15,6 +15,7 @@ read_fd_kidney <- function(
     n_basis,
     normalize = list("curve" = TRUE, "scalar"= TRUE, "between" = TRUE)
     ){
+
   kidney_variables <- separate_variables_kidney(
     response_function,
     training_ratio,

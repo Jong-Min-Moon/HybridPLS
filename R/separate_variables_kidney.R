@@ -1,11 +1,3 @@
-library(Matrix)
-library(MASS)
-library(pracma)
-library(jpeg)
-library(fda)
-library(splines2)
-
-
 separate_variables_kidney <- function(
     response_function,
     training_ratio,
@@ -13,7 +5,7 @@ separate_variables_kidney <- function(
     ){
 
   # 1. Prelim
-  ## pre-specified values
+  ## pre-specified values. These values are dataset-specific. DO NOT CHANGE THESE VALUES.
   K = 2 # number of functional predictor variables
   p = 15 #number of scalar predictor variables
   d_base <- 59 # number of observed points of one baseline renogram curve
@@ -66,16 +58,17 @@ separate_variables_kidney <- function(
   # 4. Data processing
   ## procedure follows the pdf file "Data Processing.pdf"
 
-  ## 4.1. Normalize the renogram curves, for both of training and test dataset
-  if (normalize$curve){
-    for (i in 1:n_sample){
+  ## 4.1. Pre-process (only for our data) the renogram curves by dividing:
+  ### a) each baseline renogram curve by its maximum; and
+  ### b) each post-furosemide (diuretic) renogram curve by the maximum of the baseline renogram curve
+  for (i in 1:n_sample){
       max_base <- max(reno_base[i, ])
-      reno_base[i, ] <- reno_base[i, ] / max_base
-      reno_post[i, ] <- reno_post[i, ] / max_base
+      reno_base[i, ] <- reno_base[i, ] / max_base # a)
+      reno_post[i, ] <- reno_post[i, ] / max_base # b)
       }
-    }
 
 
+  #Normalize the renogram curves, for both of training and test dataset
   ## 4.2. Center the normalized renogram curves:
   ### training dataset:
   reno_base_train <- reno_base[training_idx,]
