@@ -22,7 +22,7 @@ create_predictor_functional <- function(coef, J, J_dotdot){
   predictor_object <- new("predictor_functional",
                           coef = coef,
                           J = J,
-                          J_half = get_J_half(J),
+                          J_half = get_gram_half(J),
                           J_dotdot = J_dotdot
                           )
   return(predictor_object)

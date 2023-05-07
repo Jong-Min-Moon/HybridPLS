@@ -1,4 +1,4 @@
-get_J_half <- function(J) {
+get_gram_half <- function(J) {
   # gram matrix is positive definite,
   # so eigenvalues can be square-rooted, and eigenvectors are orthonormal.
   J_eigen <- eigen(J)

@@ -8,6 +8,15 @@ get_gram_2d <- function(argval, basis_evals){
   return(J)
 }
 
+get_gram_half <- function(J) {
+  # gram matrix is positive definite,
+  # so eigenvalues can be square-rooted, and eigenvectors are orthonormal.
+  J_eigen <- eigen(J)
+  S_half <- diag(sqrt(J_eigen$values))
+  V <- J_eigen$vectors
+  J_half <- V %*% S_half %*% t(V)
+  return(J_half)
+}
 
 fit_spine_2d <- function(argvals, evals, n_basis){
 
