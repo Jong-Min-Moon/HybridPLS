@@ -1,3 +1,7 @@
+get_traning_idx <- function(n_sample, training_ratio){
+  return( sample(n_sample, floor(training_ratio * n_sample)) )
+}
+
 get_gram_2d <- function(argval, basis_evals){
   n_basis <- dim(basis_evals)[2]
   J <- matrix(nrow= n_basis, ncol = n_basis)

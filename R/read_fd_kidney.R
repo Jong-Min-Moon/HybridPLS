@@ -1,12 +1,3 @@
-library(Matrix)
-library(MASS)
-library(pracma)
-library(jpeg)
-library(fda)
-library(splines2)
-
-
-
 ################# Read functions for kidney data ###################
 
 read_fd_kidney <- function(
@@ -15,6 +6,11 @@ read_fd_kidney <- function(
     n_basis,
     normalize = list("curve" = TRUE, "scalar"= TRUE, "between" = TRUE)
     ){
+
+  kidney_value <- extract_value_kidney()
+  kidney_value$y <- response_mean_diagnosis(kidney_value$y)
+  kidney_value <- preprocess_reno(kidney_value) #preprocessing, only for Emory kidney data
+
 
   kidney_variables <- separate_variables_kidney(
     response_function,

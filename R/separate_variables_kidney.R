@@ -1,3 +1,12 @@
+
+
+
+
+
+
+
+
+
 separate_variables_kidney <- function(
     response_function,
     training_ratio,
@@ -7,41 +16,26 @@ separate_variables_kidney <- function(
   # 1. Prelim
   ## pre-specified values. These values are dataset-specific. DO NOT CHANGE THESE VALUES.
   K = 2 # number of functional predictor variables
-  p = 15 #number of scalar predictor variables
-  d_base <- 59 # number of observed points of one baseline renogram curve
-  d_post <- 40 # number of observed points of one post-furosemide renogram curve
 
-  list_ID <- unique(kidney$ID) #unique identifier of the kidneys.
-  n_sample <- length(list_ID)
+
+
+
+
 
   ## initialize data-saving objects
-  reno_base <- array(numeric(), c(n_sample, d_base)) #baseline renogram curves
-  reno_post <- array(numeric(), c(n_sample, d_post)) #post-furosemide  renogram curves
-  scalar_predictors <- matrix(nrow = n_sample, ncol = p)
-  y <- rep(NA, n_sample)
+
+
+
 
 
 
   # 2. separate variables
 
 
-  for (i in 1:n_sample){
-    ID <- list_ID[i] # one object
-    data_observation <- kidney[kidney$ID == ID,] #data of one object
-    data_base <- data_observation[data_observation$Study == "Baseline", ]
-    data_post <- data_observation[data_observation$Study != "Baseline", ]
-    data_scalar <- data_observation[1, c(12, 16:29)] #scalar predictor variables. 12 = age. 16-29
 
-    # save values in the matrix
-    reno_base[i, ] <- (data_base$renogram_value)
-    reno_post[i, ] <- (data_post$renogram_value)
-    scalar_predictors[i, ] <- as.numeric(data_scalar)
-    y[i] <- response_function(data_observation) #response function is an input variable, so we can change this
-  }
 
-  training_idx <- sample(n_sample, floor(training_ratio * n_sample))
+  training_idx <- get_traning_idx(n_sample, training_ratio)
   y_test <-  y[-training_idx]
-  print(y_test)
   n_samples_test <- length(y_test)
 
 
@@ -61,26 +55,37 @@ separate_variables_kidney <- function(
   ## 4.1. Pre-process (only for our data) the renogram curves by dividing:
   ### a) each baseline renogram curve by its maximum; and
   ### b) each post-furosemide (diuretic) renogram curve by the maximum of the baseline renogram curve
-  for (i in 1:n_sample){
-      max_base <- max(reno_base[i, ])
-      reno_base[i, ] <- reno_base[i, ] / max_base # a)
-      reno_post[i, ] <- reno_post[i, ] / max_base # b)
-      }
+  reno_preprocessed <- preprocess_reno(reno_base, reno_post)
+  reno_base <- reno_preprocessed$base
+  reno_post <- reno_preprocessed$post
+
 
 
   #Normalize the renogram curves, for both of training and test dataset
   ## 4.2. Center the normalized renogram curves:
   ### training dataset:
   reno_base_train <- reno_base[training_idx,]
+  reno_base_test <- reno_base[-training_idx,]
+
+  - ( matrix(rep(1, n_samples_test), ncol =1) %*% reno_base_mean )
+  normalize_curve_2d <- function(curve_train, curve_test){
+    reno_base_mean <- apply(curve_train, 2, mean)
+    reno_base_sd <- apply(curve_train, 2, sd)
+  }
+
+
+
+
+  numerator <-
   reno_base_centered <- scale(reno_base_train, scale = FALSE)
-  reno_base_mean <- matrix(attr(reno_base_centered, "scaled:center"), nrow=1)
+
 
   reno_post_train <- reno_post[training_idx,]
   reno_post_centered <- scale(reno_post_train, scale = FALSE)
   reno_post_mean <- matrix(attr(reno_post_centered, "scaled:center"), nrow=1)
 
   ### test dataset, using the training mean
-  reno_base_test <- reno_base[-training_idx,]- ( matrix(rep(1, n_samples_test), ncol =1) %*% reno_base_mean )
+
   reno_post_test <- reno_post[-training_idx,]- ( matrix(rep(1, n_samples_test), ncol =1) %*% reno_post_mean )
 
 
