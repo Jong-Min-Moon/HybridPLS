@@ -1,7 +1,6 @@
 ################# Read functions for kidney data ###################
 
 read_fd_kidney <- function(
-    response_function,
     training_ratio,
     n_basis,
     normalize = list("curve" = TRUE, "scalar"= TRUE, "between" = TRUE)
@@ -17,28 +16,36 @@ read_fd_kidney <- function(
   kidney_predictor_train <- create_hybrid_predictors_kidney(kidney_value_train, 15)
   kidney_predictor_test <- create_hybrid_predictors_kidney(kidney_predictor_test, 15)
 
-  kidney_predictor_curvenormalized <- curve_normalize_train_test(kidney_predictor_train, kidney_predictor_test)
+  #curve normalization
+  if(normalize$"curve" == TRUE){
+    kidney_predictor_curvenormalized <- curve_normalize_train_test(kidney_predictor_train, kidney_predictor_test)
+    kidney_predictor_train <- kidney_predictor_curvenormalized$train
+    kidney_predictor_test <- kidney_predictor_curvenormalized$test
+  }
 
-  kidney_variables <- separate_variables_kidney(
-    response_function,
-    training_ratio,
-    list("curve" = normalize$curve, "scalar" = normalize$scalar)
-    )
+  # scalar normalization
+  if(normalize$"scalar" == TRUE){
+    kidney_predictor_scalarormalized <- scalar_normalize_train_test(kidney_predictor_train, kidney_predictor_test)
+    kidney_predictor_train <- kidney_predictor_scalarormalized$train
+    kidney_predictor_test <- kidney_predictor_scalarormalized$test
+  }
+
+  if(normalize$"between" == TRUE){
+    kidney_predictor_btwnormalized <- btwn_normalize_train_test(kidney_predictor_train, kidney_predictor_test)
+    kidney_predictor_train <- kidney_predictor_btwnormalized$train
+    kidney_predictor_test <- kidney_predictor_btwnormalized$test
+  }
+  # btwn normalization
 
 
   result <- list()
   cat("Training data:\n")
-  result$"y_train" = kidney_variables$training_set$y
-  result$"W_train" = turn_into_hybrid_kidney(kidney_variables$training_set, n_basis)
-
-  cat("Training data (mean function):\n")
-  result$"W_train_mean" = turn_into_hybrid_kidney(kidney_variables$training_mean, n_basis)
+  result$"y_train" = kidney_value_train$y
+  result$"W_train" = kidney_predictor_train
 
   cat("Test data:\n")
-  result$"y_test" = kidney_variables$test_set$y
-  result$"W_test" = turn_into_hybrid_kidney(kidney_variables$test_set, n_basis)
+  result$"y_test" = kidney_value_test$y
+  result$"W_test" = kidney_predictor_test
 
-
-
-    return(result)
+  return(result)
 }

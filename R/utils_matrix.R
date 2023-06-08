@@ -46,7 +46,9 @@ function(input){
 setMethod("get_sd", "matrix",
 ###########################################
 function(input){
-  return(matrix(apply(input, 2, sd)), nrow=1)
+  return(
+    matrix(apply(input, 2, sd), nrow=1)
+    )
   }
 ###########################################
 )
