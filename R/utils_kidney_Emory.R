@@ -51,7 +51,9 @@ extract_value_kidney <- function(){
 }
 
 response_mean_diagnosis <- function(y){
-  return(apply(y, 1, mean))
+  return(
+    matrix(apply(y, 1, mean))
+    )
   }
 
 preprocess_reno <- function(kidney_value){
@@ -59,8 +61,8 @@ preprocess_reno <- function(kidney_value){
   ### a) each baseline renogram curve by its maximum; and
   ### b) each post-furosemide (diuretic) renogram curve by the maximum of the baseline renogram curve
   new_kidney_value <- kidney_value
-  reno_base <- kidney_values$x_functional$first$value
-  reno_post <- kidney_values$x_functional$second$value
+  reno_base <- kidney_value$x_functional$first$value
+  reno_post <- kidney_value$x_functional$second$value
   n_sample <- nrow(reno_base)
 
 

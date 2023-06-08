@@ -10,6 +10,7 @@ read_fd_kidney <- function(
   kidney_value <- extract_value_kidney()
   kidney_value$y <- response_mean_diagnosis(kidney_value$y)
   kidney_value <- preprocess_reno(kidney_value) #preprocessing, only for Emory kidney data
+  kidney_value_split <- train_test_split(kidney_value, 0.3)
 
 
   kidney_variables <- separate_variables_kidney(
