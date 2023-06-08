@@ -29,11 +29,11 @@ extract_value_kidney <- function(){
 
     data_base <- data_observation[data_observation$Study == "Baseline", ]
     reno_base_value[i, ] <- (data_base$renogram_value)
-    reno_base_timestamp[i,] <- (data_base$Time_Interval_Stamp)
+    reno_base_timestamp[i,] <- (data_base$Time_Interval_Stamp)/max(data_base$Time_Interval_Stamp)
 
     data_post <- data_observation[data_observation$Study != "Baseline", ]
     reno_post_value[i, ] <- (data_post$renogram_value)
-    reno_post_timestamp[i,] <- (data_post$Time_Interval_Stamp)
+    reno_post_timestamp[i,] <- (data_post$Time_Interval_Stamp)/max(data_post$Time_Interval_Stamp)
 
     scalar_predictors[i, ] <- as.numeric(data_base[1, c(12, 16:29)]) #scalar predictor variables. 12 = age. 16-29
     response[i,] <- as.numeric(data_base[1, c(13, 14, 15)])

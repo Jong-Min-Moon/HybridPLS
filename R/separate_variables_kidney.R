@@ -34,15 +34,8 @@ separate_variables_kidney <- function(
 
 
 
-  training_idx <- get_traning_idx(n_sample, training_ratio)
-  y_test <-  y[-training_idx]
-  n_samples_test <- length(y_test)
 
 
-  # 3. save some info
-  ## observed function evaluation points rescaled into [0,1], same for all i
-  argvals_base <- data_base$Time_Interval_Stamp / max(data_base$Time_Interval_Stamp)
-  argvals_post <- data_post$Time_Interval_Stamp / max(data_post$Time_Interval_Stamp)
 
   #preserve scalar pridictor variable names
   colnames(scalar_predictors) <- colnames(data_scalar)

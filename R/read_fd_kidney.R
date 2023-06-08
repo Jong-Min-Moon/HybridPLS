@@ -11,7 +11,13 @@ read_fd_kidney <- function(
   kidney_value$y <- response_mean_diagnosis(kidney_value$y)
   kidney_value <- preprocess_reno(kidney_value) #preprocessing, only for Emory kidney data
   kidney_value_split <- train_test_split(kidney_value, 0.3)
+  kidney_value_train <- kidney_value_split$train
+  kidney_value_test <- kidney_value_split$test
 
+  kidney_predictor_train <- create_hybrid_predictors_kidney(kidney_value_train, 15)
+  kidney_predictor_test <- create_hybrid_predictors_kidney(kidney_predictor_test, 15)
+
+  kidney_predictor_curvenormalized <- curve_normalize_train_test(kidney_predictor_train, kidney_predictor_test)
 
   kidney_variables <- separate_variables_kidney(
     response_function,
@@ -33,16 +39,6 @@ read_fd_kidney <- function(
   result$"W_test" = turn_into_hybrid_kidney(kidney_variables$test_set, n_basis)
 
 
-  if (normalize$between){
-    cat("Scale the scalar predictors so that the variability between the functional and scalar predictors are comparable:")
-    X_1_star <- result$W_train@predictor_functional_list[[1]]
-    X_2_star <- result$W_train@predictor_functional_list[[2]]
-    Z_s <- result$W_train@Z
-    omega <- (get_norm_sqrd(X_1_star) + get_norm_sqrd(X_2_star))/ sum((Z_s)^2)
-
-    result$W_train@Z <- sqrt(omega) * (result$W_train@Z)
-    result$W_test@Z <- sqrt(omega) * (result$W_test@Z)
-    }
 
     return(result)
 }

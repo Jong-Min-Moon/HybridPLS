@@ -28,16 +28,33 @@ setClass(
     n_sample = "numeric"
   ))
 
-create_hybrid_predictors_kidney <- function(Z, predictor_functional_1, predictor_functional_2){
-if(
-  !(
-    class(predictor_functional_1)[1] == "predictor_functional"
-    ) & (
-      class(predictor_functional_2)[1] == "predictor_functional"
-      )
-){
-  stop("Inputs should be functional predictor objects")
-}else{
+create_hybrid_predictors_kidney <- function(value_object, n_basis){
+  Z <- value_object$x_scalar
+
+  cat(paste("\t For base curves, "))
+  split_fit_base <- fit_spine_2d(
+    argvals = value_object$x_functional$first$timestamp[1,],
+    evals = value_object$x_functional$first$value,
+    n_basis = n_basis)
+
+  cat(paste("\t For post curves, "))
+  predictor_functional_1 <- create_predictor_functional(
+    split_fit_base$C,
+    split_fit_base$J,
+    split_fit_base$J_dotdot
+  )
+
+  split_fit_post <- fit_spine_2d(
+    argvals = value_object$x_functional$second$timestamp[1,],
+    evals = value_object$x_functional$second$value,
+    n_basis = n_basis)
+
+  predictor_functional_2 <- create_predictor_functional(
+    split_fit_post$C,
+    split_fit_post$J,
+    split_fit_post$J_dotdot
+  )
+
   predictor_object <- new("predictor_hybrid",
                           Z = Z,
                           predictor_functional_list = list(
@@ -45,10 +62,9 @@ if(
                             predictor_functional_2
                             ),
                           n_predictor_functional = 2,
-                          n_sample = dim(Z)[1]
+                          n_sample = nrow(Z)
                           )
   return(predictor_object)
-  }
 }
 
 
@@ -91,15 +107,15 @@ setMethod("subtr", "predictor_hybrid",
 
 
 setMethod("scalar_mul", signature("predictor_hybrid", "numeric"),
-          ################################################################
-          function(W, scalar) {
-            for (i in 1:W@n_predictor_functional){
-              W@predictor_functional_list[[i]]@coef <- scalar * W@predictor_functional_list[[i]]@coef
-            }
-            W@Z <- scalar*(W@Z)
-            return(W)
-          }
-          ################################################################
+################################################################
+function(input, scalar) {
+  for (i in 1:input@n_predictor_functional){
+    input@predictor_functional_list[[i]]@coef <- scalar * input@predictor_functional_list[[i]]@coef
+    }
+  input@Z <- scalar*(input@Z)
+  return(input)
+}
+################################################################
 )
 
 

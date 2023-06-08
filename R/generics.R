@@ -5,12 +5,15 @@ setGeneric("is_same_basis", function(input, other)
 setGeneric("is_one_observation", function(input)
   standardGeneric("is_one_observation"))
 
-setGeneric("get_norm_sqrd", function(input)
-  standardGeneric("get_norm_sqrd"))
+setGeneric("get_sum_of_norm_sqrd", function(input)
+  standardGeneric("get_sum_of_norm_sqrd"))
 
 
 setGeneric("add", function(input, other, alpha=1)
   standardGeneric("add"))
+
+setGeneric("add_broadcast", function(input, other, alpha=1)
+  standardGeneric("add_broadcast"))
 
 setGeneric(
   "subtr",
@@ -18,9 +21,27 @@ setGeneric(
   )
 
 setGeneric(
-  "scalar_mul",
-  function(W, scalar) standardGeneric("scalar_mul")
+  "subtr_broadcast",
+  function(input, other, alpha=1)
+    standardGeneric("subtr_broadcast")
   )
+
+setGeneric(
+  "scalar_mul",
+  function(input, scalar) standardGeneric("scalar_mul")
+  )
+
+setGeneric(
+  "get_mean",
+  function(input) standardGeneric("get_mean")
+)
+
+setGeneric(
+  "get_sd",
+  function(input) standardGeneric("get_sd")
+)
+
+
 
 setGeneric(
   "hybrid_inner_prod",
