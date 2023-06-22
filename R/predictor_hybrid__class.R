@@ -28,46 +28,21 @@ setClass(
     n_sample = "numeric"
   ))
 
-create_hybrid_predictors_kidney <- function(value_object, n_basis){
-  Z <- value_object$x_scalar
 
-  cat(paste("\t For base curves, "))
-  split_fit_base <- fit_spine_2d(
-    argvals = value_object$x_functional$first$timestamp[1,],
-    evals = value_object$x_functional$first$value,
-    n_basis = n_basis)
-
-  cat(paste("\t For post curves, "))
-  predictor_functional_1 <- create_predictor_functional(
-    split_fit_base$C,
-    split_fit_base$J,
-    split_fit_base$J_dotdot
-  )
-
-  split_fit_post <- fit_spine_2d(
-    argvals = value_object$x_functional$second$timestamp[1,],
-    evals = value_object$x_functional$second$value,
-    n_basis = n_basis)
-
-  predictor_functional_2 <- create_predictor_functional(
-    split_fit_post$C,
-    split_fit_post$J,
-    split_fit_post$J_dotdot
-  )
-
-  predictor_object <- new("predictor_hybrid",
-                          Z = Z,
-                          predictor_functional_list = list(
-                            predictor_functional_1,
-                            predictor_functional_2
-                            ),
-                          n_predictor_functional = 2,
-                          n_sample = nrow(Z)
-                          )
-  return(predictor_object)
+setMethod("extract_fd", signature("predictor_hybrid"),
+###########################################
+function(input){
+  n_basis = ncol(input@predictor_functional_list[[1]]@coef)
+  result <- list()
+  my_basis <- create.bspline.basis(rangeval = c(0,1), nbasis = n_basis)
+  for (k in 1:(input@n_predictor_functional)){
+    predictor_functional <- input@predictor_functional_list[[k]]
+    result[[k]] <- fda::fd(coef = t(predictor_functional@coef), basisobj = my_basis)
+  }
+  return( result )
 }
-
-
+###########################################
+)
 
 setMethod("add", "predictor_hybrid",
           ###########################################

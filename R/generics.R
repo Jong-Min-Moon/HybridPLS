@@ -111,3 +111,8 @@ setGeneric(
   "predict_test",
   function(pls_object, W_test) standardGeneric("predict_test")
   )
+
+setGeneric(
+  "extract_fd",
+  function(input) standardGeneric("extract_fd")
+)

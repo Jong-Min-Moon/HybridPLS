@@ -8,15 +8,17 @@ setClass(
     #gram matrices. Bases are only used in the form of Gram matrix.
     J = "matrix", #original gram matrix (M x M)
     J_half = "matrix", # matrix square root of the gram matrix (M x M)
-    J_dotdot = "matrix" # gram matrix for second derivative (M x M)
+    J_dotdot = "matrix", # gram matrix for second derivative (M x M)
+    original_t = "matrix"
   ))
 
-create_predictor_functional <- function(coef, J, J_dotdot){
+create_predictor_functional <- function(coef, J, J_dotdot, original_t){
   predictor_object <- new("predictor_functional",
                           coef = coef,
                           J = J,
                           J_half = get_gram_half(J),
-                          J_dotdot = J_dotdot
+                          J_dotdot = J_dotdot,
+                          original_t = original_t
                           )
   return(predictor_object)
 }
