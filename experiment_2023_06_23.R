@@ -10,7 +10,7 @@ names(mse) <- c("hybridPLS", "sofreg", "FPCA+PCAreg", "PLS", "PCA+PLS")
 
 seed = 1
 set.seed(seed) # for training/test split
-n_basis = 20
+n_basis = 10
 #set the number of max iterations
 L_max = 10
 lambda = c(1e-6,5*1e-6)
@@ -72,17 +72,50 @@ mse[1]
 W_train_fd <- extract_fd(W_train_centered)
 W_test_fd <- extract_fd(W_test_centered)
 
+#try intercept
+xfdlist <- list(
+  "const" = rep(1, length(y_train_logit_centered)),
+  "precurve" = W_train_fd[[1]]
+  #,"postcurve" = W_train_fd[[2]]
+  )
+
+# The intercept must be constant for a scalar response
+betabasis1 <- create.constant.basis(c(0, 1))
+betafd1    <- fd(0, betabasis1) # this was important!
+betafdPar1 <- fdPar(betafd1) # this was important!
+
+betafd2  <- create.bspline.basis(c(0, 1),n_basis)
+betafdPar2  <- fdPar(betafd2) # convert to an fdPar object
+
+betafd3  <- create.bspline.basis(c(0, 1),n_basis)
+betafdPar3  <- fdPar(betafd3) # convert to an fdPar object
+
+betalist <- list(
+  "const" = betafdPar1,
+  "precurve" = betafdPar2
+#, "postcurve" = betafdPar3
+  )
+sof_reg <- fRegress(y_train_logit_centered, xfdlist, betalist)
+
+
+
+soft.fit <- pfr(y_train_logit_centered ~ lf(W_train_fd[[1]]))
+
+~
+
+
+
 xfdlist <- betalist <- vector("list",2)
 #xfdlist[[1]] <- rep(1, length(y_train_logit_centered))
 xfdlist[[1]] <- W_train_fd[[1]]
 xfdlist[[2]] <- W_train_fd[[2]]
-
+xfdlist[[3]] <- W_train_centered@Z[,1]
 conbasis <- create.constant.basis(c(0, 1))
 betabasis <- create.bspline.basis(c(0, 1),n_basis)
 #betalist[[1]] <- conbasis
 betalist[[1]] <- betabasis
 betalist[[2]]<- betabasis
-
+betalist[[3]]<- conbasis
 sof_reg <- fRegress(y_train_logit_centered, xfdlist, betalist)
 
 xfdlist_test  <- vector("list",2)
