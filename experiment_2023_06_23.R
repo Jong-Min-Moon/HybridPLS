@@ -68,75 +68,71 @@ mse[1]
 
 
 ##############################################################################################
+# 2. scalar-on-function regression with scalar covariate
 
-W_train_fd <- extract_fd(W_train_centered)
-W_test_fd <- extract_fd(W_test_centered)
 
-#try intercept
-xfdlist <- list(
-  "const" = rep(1, length(y_train_logit_centered)),
-  "precurve" = W_train_fd[[1]]
-  #,"postcurve" = W_train_fd[[2]]
-  )
-
-# The intercept must be constant for a scalar response
-betabasis1 <- create.constant.basis(c(0, 1))
-betafd1    <- fd(0, betabasis1) # this was important!
-betafdPar1 <- fdPar(betafd1) # this was important!
-
-betafd2  <- create.bspline.basis(c(0, 1),n_basis)
-betafdPar2  <- fdPar(betafd2) # convert to an fdPar object
-
-betafd3  <- create.bspline.basis(c(0, 1),n_basis)
-betafdPar3  <- fdPar(betafd3) # convert to an fdPar object
-
-betalist <- list(
-  "const" = betafdPar1,
-  "precurve" = betafdPar2
-#, "postcurve" = betafdPar3
-  )
-sof_reg <- fRegress(y_train_logit_centered, xfdlist, betalist)
+timepoints <- W_train_centered@predictor_functional_list[[1]]@original_t
+dataset_for_regression <- dataset_for_regression_Emory(y_train_logit_centered, W_train_centered)
+dataset_for_prediction <- dataset_for_prediction_Emory(W_test_centered)
+regression_result <- matrix(NA, nrow = 2, ncol = 3)
+rownames(regression_result) <- c("train", "test")
+colnames(regression_result) <- c("first", "second", "all")
 
 
 
-soft.fit <- pfr(y_train_logit_centered ~ lf(W_train_fd[[1]]))
 
-~
+# first functional predictors
+soft.fit <- pfr(
+  y_train_logit_centered ~
+    lf(precurve, k=10, argvals = W_train_centered@predictor_functional_list[[1]]@original_t, bs="bs") +
+    X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13 + X14 + X15,
+  data = dataset_for_regression
+)
 
-
-
-xfdlist <- betalist <- vector("list",2)
-#xfdlist[[1]] <- rep(1, length(y_train_logit_centered))
-xfdlist[[1]] <- W_train_fd[[1]]
-xfdlist[[2]] <- W_train_fd[[2]]
-xfdlist[[3]] <- W_train_centered@Z[,1]
-conbasis <- create.constant.basis(c(0, 1))
-betabasis <- create.bspline.basis(c(0, 1),n_basis)
-#betalist[[1]] <- conbasis
-betalist[[1]] <- betabasis
-betalist[[2]]<- betabasis
-betalist[[3]]<- conbasis
-sof_reg <- fRegress(y_train_logit_centered, xfdlist, betalist)
-
-xfdlist_test  <- vector("list",2)
-#xfdlist[[1]] <- rep(1, length(y_train_logit_centered))
-xfdlist_test[[1]] <- W_test_fd[[1]]
-xfdlist_test[[2]] <- W_test_fd[[2]]
-summary(sof_reg)
-
-#inverse transform
-y_pred_pls <- predict.fRegress(sof_reg, xfdlist_test)
 y_pred_pls <- reponse_inverse_transform_min_max_logit(
-  y_pred_pls, y_train_logit_mean, y_train_max, y_train_min)
-mse[2] <- mse(y_pred_pls, y_test)
-mse[2]
-par(mfrow=c(2,1))
-plot(sof_reg$betaestlist[[1]], main = "first coef function")
-plot(sof_reg$betaestlist[[2]], main = "second coef funciton")
-par(mfrow=c(1,1))
+  predict(soft.fit), y_train_logit_mean, y_train_max, y_train_min) # training fit
+regression_result[1,1] <- mse(y_pred_pls, y_train)
 
-plot(W_train_fd[[1]])
-plot(W_train_fd[[2]][20])
+y_pred_pls <- reponse_inverse_transform_min_max_logit(
+  predict(soft.fit, dataset_for_prediction), y_train_logit_mean, y_train_max, y_train_min) # test fit
+regression_result[2,1] <- mse(y_pred_pls, y_test)
+
+
+# second functional predictors
+soft.fit <- pfr(
+  y_train_logit_centered ~
+    lf(postcurve, k=10, argvals = W_train_centered@predictor_functional_list[[2]]@original_t, bs="bs") +
+    X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13 + X14 + X15,
+  data = dataset_for_regression
+)
+
+y_pred_pls <- reponse_inverse_transform_min_max_logit(
+  predict(soft.fit), y_train_logit_mean, y_train_max, y_train_min) # training fit
+regression_result[1,2] <- mse(y_pred_pls, y_train)
+
+y_pred_pls <- reponse_inverse_transform_min_max_logit(
+  predict(soft.fit, dataset_for_prediction), y_train_logit_mean, y_train_max, y_train_min) # test fit
+regression_result[2,2] <- mse(y_pred_pls, y_test)
+
+# all functional predictors
+soft.fit <- pfr(
+  y_train_logit_centered ~
+    lf(precurve, k=10, argvals = W_train_centered@predictor_functional_list[[1]]@original_t, bs="bs") +
+    lf(postcurve, k=10, argvals = W_train_centered@predictor_functional_list[[2]]@original_t, bs="bs") +
+    X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13 + X14 + X15,
+  data = dataset_for_regression
+)
+
+y_pred_pls <- reponse_inverse_transform_min_max_logit(
+  predict(soft.fit), y_train_logit_mean, y_train_max, y_train_min) # training fit
+regression_result[1,3] <- mse(y_pred_pls, y_train)
+
+y_pred_pls <- reponse_inverse_transform_min_max_logit(
+  predict(soft.fit, dataset_for_prediction), y_train_logit_mean, y_train_max, y_train_min) # test fit
+regression_result[2,3] <- mse(y_pred_pls, y_test)
+
+regression_result
+
 # FPCA + PCA
 
 

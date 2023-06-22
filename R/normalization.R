@@ -7,7 +7,8 @@ curve_normalize_train_test <- function(predictor_train, predictor_test){
     mean_train <- get_mean(predictor_train@predictor_functional_list[[k]]) # train mean function
     centered_train <-
       subtr_broadcast(predictor_train@predictor_functional_list[[k]], mean_train)
-    deno_train <- sqrt(get_sum_of_norm_sqrd(centered_train)/(n_sample-1))
+
+        deno_train <- sqrt(get_sum_of_norm_sqrd(centered_train)/(n_sample-1))
 
     predictor_train_normalized@predictor_functional_list[[k]] <-
       curve_normalize(

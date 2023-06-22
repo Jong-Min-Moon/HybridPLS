@@ -43,7 +43,7 @@ function(input, other, alpha = 1) {
     }else{
       result <- input
       result@coef <-add_broadcast(input@coef, other@coef, alpha)
-      result@coef <-add_broadcast(input@original_X, other@original_X, alpha)
+      result@original_X <-add_broadcast(input@original_X, other@original_X, alpha)
       return(result)
     }
   }
@@ -78,6 +78,8 @@ function(input){
   norm_sqrd <- 0
   for (i in 1:n){
     coef_now <- matrix(input@coef[i,], nrow = 1)
+    print(coef_now)
+    print(dim(input@J))
     norm_sqrd <- norm_sqrd + sum(
       (t(coef_now) %*% coef_now) * input@J
     )
