@@ -32,6 +32,7 @@ curve_normalize_train_test <- function(predictor_train, predictor_test){
 }
 
 curve_normalize <- function(functional_predictor, mean, deno){
+  # operation also takes care of the original_X
   functional_predictor_normalized <- subtr_broadcast(functional_predictor, mean) #numerator
   functional_predictor_normalized <- scalar_mul(functional_predictor_normalized, 1/deno)
   return(functional_predictor_normalized)

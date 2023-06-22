@@ -1,4 +1,5 @@
 pick_value <- function(value_object, idx){
+  #value_object is a matrix, not yet turnt into a functional data object
   value_object_picked <- value_object
   n_x_functional <- length(value_object$x_functional)
   value_object_picked$y <-value_object$y[idx, ]
@@ -13,6 +14,7 @@ pick_value <- function(value_object, idx){
 }
 
 train_test_split <- function(value_object, test_ratio){
+  #value_object is a matrix, not yet turnt into a functional data object
   n_sample <- nrow(value_object$x_scalar)
   n_test <- floor(test_ratio * n_sample)
   test_idx <- sample(n_sample, n_test)

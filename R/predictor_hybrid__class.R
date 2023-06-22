@@ -458,7 +458,6 @@ setMethod("pls_pen", "predictor_hybrid",
 
 
 
-library(Matrix)
 
 setClass(
   "hybrid_pls_kidney",

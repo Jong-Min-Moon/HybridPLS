@@ -30,6 +30,7 @@ setMethod("scalar_mul", signature("predictor_functional", "numeric"),
 function(input, scalar){
   result <- input
   result@coef <- scalar * (input@coef)
+  result@original_X <- scalar * (input@original_X)
   return(result)
 }
 ###########################################
@@ -42,6 +43,7 @@ function(input, other, alpha = 1) {
     }else{
       result <- input
       result@coef <-add_broadcast(input@coef, other@coef, alpha)
+      result@coef <-add_broadcast(input@original_X, other@original_X, alpha)
       return(result)
     }
   }
@@ -56,7 +58,20 @@ function(input, other, alpha = 1) {
   }
 ###########################################
 )
+
+setMethod("get_mean", "predictor_functional",
+          ###########################################
+          function(input){
+            mean_object <- input
+            mean_object@coef <- matrix(apply(mean_object@coef, 2, mean), nrow=1)
+            mean_object@original_X <- matrix(apply(mean_object@original_X, 2, mean), nrow=1)
+            return(mean_object)
+          }
+          ###########################################
+)
+
 setMethod("get_sum_of_norm_sqrd", "predictor_functional",
+          #output: a scalar value
 ###########################################
 function(input){
   n <- nrow(input@coef) #sample size
@@ -72,15 +87,7 @@ function(input){
 ###########################################
 )
 
-setMethod("get_mean", "predictor_functional",
-###########################################
-function(input){
-  mean_object <- input
-  mean_object@coef <- matrix(apply(mean_object@coef, 2, mean), nrow=1)
-  return(mean_object)
-  }
-###########################################
-)
+
 
 
 

@@ -140,7 +140,8 @@ create_hybrid_predictors_kidney <- function(value_object, n_basis){
     split_fit_base$C,
     split_fit_base$J,
     split_fit_base$J_dotdot,
-    value_object$x_functional$first$timestamp
+    value_object$x_functional$first$timestamp,
+    value_object$x_functional$first$value
   )
 
   split_fit_post <- fit_spine_2d(
@@ -152,7 +153,8 @@ create_hybrid_predictors_kidney <- function(value_object, n_basis){
     split_fit_post$C,
     split_fit_post$J,
     split_fit_post$J_dotdot,
-    value_object$x_functional$second$timestamp
+    value_object$x_functional$second$timestamp,
+    value_object$x_functional$second$value
   )
 
   predictor_object <- new("predictor_hybrid",
