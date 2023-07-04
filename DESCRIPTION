@@ -18,4 +18,6 @@ Imports:
     MASS,
     Matrix,
     pracma,
-    splines2
+    splines2,
+    matrixNormal,
+    mvtnorm

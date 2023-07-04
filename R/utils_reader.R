@@ -18,7 +18,7 @@ train_test_split <- function(value_object, test_ratio){
   n_sample <- nrow(value_object$x_scalar)
   n_test <- floor(test_ratio * n_sample)
   test_idx <- sample(n_sample, n_test)
-
+  print(test_idx)
   value_object_train <- pick_value(value_object, -test_idx)
   value_object_test <- pick_value(value_object, test_idx)
 
