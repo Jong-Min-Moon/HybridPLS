@@ -1,7 +1,34 @@
 #
 n_sample <- 170
+test.ratio <- 0.3
 n_eval <- 49
 n_basis <- 10
+eval_point <- seq(0,1, length = n_eval)
+n_scalar_predictor <- 15
+
+n_basis_predictor <- 15
+n_basis_coef <- 7
+basis_reg_coef <- create.bspline.basis(rangeval = c(0,1), nbasis = n_basis)
+my_basis <- create.bspline.basis(rangeval = c(0,1), nbasis = n_basis)
+
+##### regression coefficients, fixed over simulations #####
+## first functional regression coefficient
+set.seed(4)
+reg_coef_1 <- fda::Data2fd(argvals = eval_points, y = as.vector(arima.sim(model = list(ar = -0.5), n = n_eval)), basisobj = basis_reg_coef)
+plot(reg_coef_1)
+
+## second functional regression coefficient
+set.seed(5)
+reg_coef_2 <- fda::Data2fd(argvals = eval_points, y = as.vector(arima.sim(model = list(ar = 0.5), n = n_eval)), basisobj = basis_reg_coef)
+plot(reg_coef_2)
+
+# scalar regression coefficient
+alpha <- rnorm(n_scalar_predictor, 0, 1)
+alpha
+
+
+##### predictor generation #####
+set.seed(1)
 
 ar_slope_1 <- 0.9
 ar_slope_2 <- 0.5
@@ -10,162 +37,110 @@ for (i in 1:n_sample){
   functional_data_eval_1[i,] <- arima.sim(model = list(ar = ar_slope_1), n = n_eval)
   functional_data_eval_2[i,] <- arima.sim(model = list(ar = ar_slope_2), n = n_eval)
 }
-my_basis <- create.bspline.basis(rangeval = c(0,1), nbasis = n_basis)
-predictor_func_1 <- fda::fd(coef = t(basis_coef_1), basisobj = my_basis)
-predictor_func_2 <- fda::fd(coef = t(basis_coef_2), basisobj = my_basis)
+
+# ar process into functional objects
+predictor_func_1 <- fda::Data2fd(argvals = eval_points, y = t(functional_data_eval_1), basisobj = my_basis)
+predictor_func_2 <- fda::Data2fd(argvals = eval_points, y = t(functional_data_eval_2), basisobj = my_basis)
+
+#between_predictor_correlation <- matrix(rnorm(n_sample*n_basis), nrow = n_sample)
 
 
-
-
-
-between_predictor_correlation <- matrix(rnorm(n_sample*n_basis), nrow = n_sample)
-
-
-
-
-par(mfrow=c(1,1))
-plot(predictor_func_1[1])
-
-t <- seq(0,1, length = n_eval)
-eval.fd(predictor_func_1, t)
 #scalar predictors
-p = 15
-V_Z <- rnorm(p,0,1)
+V_Z <- rnorm(n_scalar_predictor,0,1/10)
 V_Z <- V_Z %*% t(V_Z)
-Z <- mvtnorm::rmvnorm(n = n_sample, mean = rep (0, p), sigma = V_Z)
+Z <- mvtnorm::rmvnorm(n = n_sample, mean = rep (0, n_scalar_predictor), sigma = V_Z)
 
+# noise
+noise <- rnorm(n_sample, 0, 1/10)
 
-#y
-my_basis <- create.bspline.basis(rangeval = c(0,1), nbasis = n_basis)
-argvals <- t
-PhiB <- predict(my_basis, argvals)
-PhiB <- PhiB[nrow(PhiB):1, ncol(PhiB):1]
-J <- get_gram_2d(argvals, PhiB)
+##### response generation #####
 
-b_1 <- rnorm(n_basis, 0, 1)
-b_2 <- rnorm(n_basis, 0, 1)
-alpha <- rnorm(p, 0, 1)
-response <- basis_coef_1 %*% J %*% b_1 +
-  basis_coef_2 %*% J %*% b_2 +
-  Z %*% alpha +
-  rnorm(n_sample, 0, 1)
-response <- matrix(response, ncol = 1)
-
-value_object <- list(
-  "x_functional" = list(
-    "first" = list("value" = t(eval.fd(predictor_func_1, argvals)), "timestamp" = t(t %*% t(rep(1, n_sample)))),
-    "second" = list("value" = t(eval.fd(predictor_func_2, argvals)), "timestamp" = t(t %*% t(rep(1, n_sample))))
-  ),
-  "x_scalar" = Z,
-  "y" = response
+range(inprod(reg_coef_1, predictor_func_1))
+range(inprod(reg_coef_2, predictor_func_2))
+range(t(Z %*% alpha))
+range(noise)
+response <- matrix(
+  inprod(reg_coef_1, predictor_func_1) + inprod(reg_coef_2, predictor_func_2) + t(Z %*% alpha) + noise,
+  ncol = 1
 )
 
+range(response)
 
-kidney_value <- preprocess_reno(value_object) #preprocessing, only for Emory kidney data
-kidney_value_split <- train_test_split(kidney_value, 0.3)
-kidney_value_train <- kidney_value_split$train
-kidney_value_test <- kidney_value_split$test
-
-simul_data_functional <- read_fd_simul(
-  test_ratio = 0.3,
-  n_basis = n_basis,
-  normalize = list("curve" = TRUE, "scalar"= TRUE, "between" = TRUE),
-  value_object
-)
-
-
-
-# W is already centered
-W_train_centered <- simul_data_functional$W_train
-y_train <- simul_data_functional$y_train
-
-
-
-# test data set
-W_test_centered <- simul_data_functional$W_test
-y_test <- simul_data_functional$y_test
-
+#####
 
 ##############################################################################################
 # 1. scalar-on-function regression + scalar covariate
 # table to summarize the result
 regression_result <- matrix(NA, nrow = 2, ncol = 3)
 rownames(regression_result) <- c("train", "test")
-colnames(regression_result) <- c("first", "second", "all")
+colnames(regression_result) <- c("f1", "f1+f2", "all")
 
-# load data - matrix format to use refund package
-# since the pfr function does the smoothing for us
-timepoints_pre <- W_train_centered@predictor_functional_list[[1]]@original_t[1,]
-timepoints_post <- W_train_centered@predictor_functional_list[[2]]@original_t[1,]
-dataset_for_regression <- dataset_for_regression_refund(y_train, W_train_centered)
-dataset_for_prediction <- dataset_for_prediction_refund(W_test_centered)
+test.idx <- sample(n_sample, floor(test.ratio* n_sample))
+dataset_for_regression <- data.frame(y = response[-test.idx])
+dataset_for_regression$X1 = functional_data_eval_1[-test.idx,]
+dataset_for_regression$X2 = functional_data_eval_2[-test.idx,]
+dataset_for_regression$Z = Z[-test.idx,]
 
+dataset_for_prediction <- data.frame(y = response[test.idx])
+dataset_for_prediction$X1 = functional_data_eval_1[test.idx,]
+dataset_for_prediction$X2 = functional_data_eval_2[test.idx,]
+dataset_for_prediction$Z = Z[test.idx,]
 
-soft.fit <- refund::pfr(
-  response ~
-    refund::lf( # first functional predictor
-      precurve,
-      argvals = timepoints_pre,
+library(refund)
+# first functional predictors
+soft.fit <- pfr(
+  y ~
+    lf( # first functional predictor
+      X1,
+      argvals = eval_points,
       presmooth="bspline",
-      presmooth.opts=list(nbasis=n_basis)
+      presmooth.opts=list(nbasis=n_basis_predictor)
     ),
   data = dataset_for_regression
 )
 
 
-# first functional predictors
-soft.fit <- refund::pfr(
-  response ~
-    refund::lf( # first functional predictor
-      precurve,
-      argvals = timepoints_pre,
+regression_result[1,1] <- mse(predict(soft.fit), dataset_for_regression$y)
+regression_result[2,1] <- mse(predict(soft.fit, dataset_for_prediction), dataset_for_prediction$y)
+regression_result
+
+# first and second functional predictors
+soft.fit <- pfr(
+  y ~
+    lf( # first functional predictor
+      X1,
+      argvals = eval_points,
       presmooth="bspline",
-      presmooth.opts=list(nbasis=N)
-    )
-  +
-    X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13 + X14 + X15,
+      presmooth.opts=list(nbasis=n_basis_predictor)
+    ) +
+    lf( # first functional predictor
+      X2,
+      argvals = eval_points,
+      presmooth="bspline",
+      presmooth.opts=list(nbasis=n_basis_predictor)
+    ),
   data = dataset_for_regression
 )
 
+regression_result[1,2] <- mse(predict(soft.fit), dataset_for_regression$y)
+regression_result[2,2] <- mse(predict(soft.fit, dataset_for_prediction), dataset_for_prediction$y)
+regression_result
 
-regression_result[1,1] <- mse(predict(soft.fit), y_train)
-regression_result[2,1] <- mse(predict(soft.fit, dataset_for_prediction), y_test)
-
-
-# second functional predictors
-soft.fit <- refund::pfr(
-  y_train ~
-    refund::lf( # second functional predictor
-      postcurve,
-      argvals = timepoints_post,
+# all predictors
+soft.fit <- pfr(
+  y ~
+    lf( # first functional predictor
+      X1,
+      argvals = eval_points,
       presmooth="bspline",
-      presmooth.opts=list(nbasis=n_basis)
+      presmooth.opts=list(nbasis=n_basis_predictor)
     ) +
-    X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13 + X14 + X15,
-  data = dataset_for_regression
-)
-
-regression_result[1,2] <- mse(predict(soft.fit), y_train)
-regression_result[2,2] <- mse(predict(soft.fit, dataset_for_prediction), y_test)
-
-
-# all functional predictors
-soft.fit <- refund::pfr(
-  y_train ~
-    refund::lf( # first functional predictor
-      precurve,
-      argvals = timepoints_pre,
+    lf( # first functional predictor
+      X2,
+      argvals = eval_points,
       presmooth="bspline",
-      presmooth.opts=list(nbasis=n_basis)
-    )
-  +
-    lf( # second functional predictor
-      postcurve,
-      argvals = timepoints_post,
-      presmooth="bspline",
-      presmooth.opts=list(nbasis=n_basis)
-    ) +
-    X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13 + X14 + X15,
+      presmooth.opts=list(nbasis=n_basis_predictor)
+    ),
   data = dataset_for_regression
 )
 
