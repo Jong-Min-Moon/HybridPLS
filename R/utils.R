@@ -27,7 +27,6 @@ fit_spine_2d <- function(argvals, evals, n_basis){
   # create 1d b-spline basis functions
   #PhiB <- splines2::bSpline(argvals, df=n_basis, degree = 3, intercept = TRUE) #Jt(n.eval) X M B spline Basis #old way
   my_basis <- create.bspline.basis(rangeval = c(0,1), nbasis = n_basis)
-  J <- inprod(my_basis, my_basis)
 
   # calculate basis coefficients for observed functional data # idea from Dr. Jang
   #C <- t( MASS::ginv(PhiB) %*% t(evals) ) #old way
@@ -36,12 +35,9 @@ fit_spine_2d <- function(argvals, evals, n_basis){
   # calculate gram matrices for
   # - basis functions (J)
   # - 2nd order derivative of basis functions (J'')
+  J <- inprod(my_basis, my_basis)
+  J_dotdot <- getbasispenalty(my_basis)
 
-
-  #J_dotdot <- get_gram_2d(argvals, deriv(PhiB, 2))
-  deriv_PhiB <- predict(my_basis, argvals, deriv=2)
-  deriv_PhiB <- deriv_PhiB[nrow(deriv_PhiB):1, ncol(deriv_PhiB):1]
-  J_dotdot <- get_gram_2d(argvals, deriv_PhiB)
   return(
     list(
       C = C,
