@@ -46,10 +46,11 @@ for (i in 1:n_sample){
 
 
 #scalar predictors
-V_Z <- rnorm(n_scalar_predictor,0,1/5)
-V_Z <- V_Z %*% t(V_Z)
+#V_Z <- rnorm(n_scalar_predictor,0,1/5)
+#V_Z <- V_Z %*% t(V_Z)
+V_Z <- eye(5)/30
 Z <- mvtnorm::rmvnorm(n = n_sample, mean = rep (0, n_scalar_predictor), sigma = V_Z)
-
+plot(Z)
 # noise
 noise <- rnorm(n_sample, 0, 1/10)
 
@@ -89,6 +90,11 @@ simul_data_functional <- read_fd_simul(
 W_train_centered <- simul_data_functional$W_train
 y_train <- simul_data_functional$y_train
 head(W_train_centered@Z)
+
+a <- value_object$x_scalar
+
+head(add_broadcast(a, get_mean(a)) )
+
 # test data set
 W_test_centered <- simul_data_functional$W_test
 y_test <- simul_data_functional$y_test
@@ -118,7 +124,7 @@ soft_f1.fit <- pfr(
 
 
 regression_result[1,1] <- mse(predict(soft_f1.fit), dataset_for_regression$y)
-regression_result[2,1] <- mse(predict(soft_f1.fit, dataset_for_prediction), dataset_for_prediction$y)
+regression_result[2,1] <- mse(predict(soft_f1.fit, dataset_for_prediction), y_test)
 regression_result
 
 # first and second functional predictors
@@ -140,7 +146,7 @@ soft_f_all.fit <- pfr(
 )
 
 regression_result[1,2] <- mse(predict(soft_f_all.fit), dataset_for_regression$y)
-regression_result[2,2] <- mse(predict(soft_f_all.fit, dataset_for_prediction), dataset_for_prediction$y)
+regression_result[2,2] <- mse(predict(soft_f_all.fit, dataset_for_prediction), y_test)
 regression_result
 
 # all predictors
@@ -163,7 +169,7 @@ soft_all.fit <- pfr(
 
 
 regression_result[1,3] <- mse(predict(soft_all.fit), dataset_for_regression$y)
-regression_result[2,3] <- mse(predict(soft_all.fit, dataset_for_prediction), dataset_for_prediction$y)
+regression_result[2,3] <- mse(predict(soft_all.fit, dataset_for_prediction), y_test)
 regression_result
 
 rmse[1] <- regression_result[2,3]
@@ -175,10 +181,15 @@ rmse
 
 # 5.Our method: HybridPLS
 
+range(W_train_centered@predictor_functional_list[[1]]@J)
+range(W_train_centered@predictor_functional_list[[1]]@J_dotdot)
+
+head(W_train_centered@predictor_functional_list[[2]]@J)
+head(W_train_centered@predictor_functional_list[[2]]@J_dotdot)
 
 #MSE trend
-L_max = 40
-lambda = c(1e-6,5*1e-6) #hyperparameters
+L_max = 20
+lambda = c(1e-1,5*1e-1) #hyperparameters
 L_trend_0_logit <- rep(NA, L_max)
 for(L in 1:L_max){
   #learn the model
@@ -196,5 +207,6 @@ for(L in 1:L_max){
 
 plot(L_trend_0_logit[1:L_max], main ="hybridPLS", ylab = "MSE", xlab = "number of iteration", pch=".")
 lines(L_trend_0_logit)
-mse[5] <- min(L_trend_0_logit)
-mse
+rmse[3] <- min(L_trend_0_logit)
+rmse
+

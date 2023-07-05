@@ -27,8 +27,7 @@ fit_spine_2d <- function(argvals, evals, n_basis){
   # create 1d b-spline basis functions
   #PhiB <- splines2::bSpline(argvals, df=n_basis, degree = 3, intercept = TRUE) #Jt(n.eval) X M B spline Basis #old way
   my_basis <- create.bspline.basis(rangeval = c(0,1), nbasis = n_basis)
-  PhiB <- predict(my_basis, argvals)
-  PhiB <- PhiB[nrow(PhiB):1, ncol(PhiB):1]
+  J <- inprod(my_basis, my_basis)
 
   # calculate basis coefficients for observed functional data # idea from Dr. Jang
   #C <- t( MASS::ginv(PhiB) %*% t(evals) ) #old way
@@ -37,7 +36,7 @@ fit_spine_2d <- function(argvals, evals, n_basis){
   # calculate gram matrices for
   # - basis functions (J)
   # - 2nd order derivative of basis functions (J'')
-  J <- get_gram_2d(argvals, PhiB)
+
 
   #J_dotdot <- get_gram_2d(argvals, deriv(PhiB, 2))
   deriv_PhiB <- predict(my_basis, argvals, deriv=2)
@@ -56,14 +55,14 @@ fit_spine_2d <- function(argvals, evals, n_basis){
 dataset_for_regression_refund <- function(response, hybrid_predictor){
   dataset_for_regression <- data.frame(hybrid_predictor@Z)
   dataset_for_regression$y <- response
-  dataset_for_regression$precurve <-hybrid_predictor@predictor_functional_list[[1]]@original_X
-  dataset_for_regression$postcurve <-hybrid_predictor@predictor_functional_list[[2]]@original_X
+  dataset_for_regression$F1 <-hybrid_predictor@predictor_functional_list[[1]]@original_X
+  dataset_for_regression$F2 <-hybrid_predictor@predictor_functional_list[[2]]@original_X
   return(dataset_for_regression)
 }
 
 dataset_for_prediction_refund <- function(hybrid_predictor){
   dataset_for_regression <- data.frame(hybrid_predictor@Z)
-  dataset_for_regression$precurve <-hybrid_predictor@predictor_functional_list[[1]]@original_X
-  dataset_for_regression$postcurve <-hybrid_predictor@predictor_functional_list[[2]]@original_X
+  dataset_for_regression$F1 <-hybrid_predictor@predictor_functional_list[[1]]@original_X
+  dataset_for_regression$F2 <-hybrid_predictor@predictor_functional_list[[2]]@original_X
   return(dataset_for_regression)
 }
