@@ -54,7 +54,8 @@ fit_spine_2d <- function(argvals, evals, n_basis){
 }
 
 dataset_for_regression_refund <- function(response, hybrid_predictor){
-  dataset_for_regression <- data.frame(response, hybrid_predictor@Z)
+  dataset_for_regression <- data.frame(hybrid_predictor@Z)
+  dataset_for_regression$y <- response
   dataset_for_regression$precurve <-hybrid_predictor@predictor_functional_list[[1]]@original_X
   dataset_for_regression$postcurve <-hybrid_predictor@predictor_functional_list[[2]]@original_X
   return(dataset_for_regression)

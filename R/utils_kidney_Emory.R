@@ -176,45 +176,43 @@ read_fd_simul <- function(
     value_object
 ){
 
-  kidney_value <- value_object
-  kidney_value <- preprocess_reno(kidney_value) #preprocessing, only for Emory kidney data
-  kidney_value_split <- train_test_split(kidney_value, test_ratio)
-  kidney_value_train <- kidney_value_split$train
-  kidney_value_test <- kidney_value_split$test
+  split <- train_test_split(value_object, test_ratio)
+  train <- split$train
+  test <- split$test
 
-  kidney_predictor_train <- create_hybrid_predictors_kidney(kidney_value_train, n_basis)
-  kidney_predictor_test <- create_hybrid_predictors_kidney(kidney_value_test, n_basis)
+  predictor_train <- create_hybrid_predictors_kidney(train, n_basis)
+  predictor_test <- create_hybrid_predictors_kidney(test, n_basis)
 
   #curve normalization
   if(normalize$"curve" == TRUE){
-    kidney_predictor_curvenormalized <- curve_normalize_train_test(kidney_predictor_train, kidney_predictor_test)
-    kidney_predictor_train <- kidney_predictor_curvenormalized$train
-    kidney_predictor_test <- kidney_predictor_curvenormalized$test
+    predictor_curvenormalized <- curve_normalize_train_test(predictor_train, predictor_test)
+    predictor_train <- predictor_curvenormalized$train
+    predictor_test <- predictor_curvenormalized$test
   }
 
   # scalar normalization
   if(normalize$"scalar" == TRUE){
-    kidney_predictor_scalarormalized <- scalar_normalize_train_test(kidney_predictor_train, kidney_predictor_test)
-    kidney_predictor_train <- kidney_predictor_scalarormalized$train
-    kidney_predictor_test <- kidney_predictor_scalarormalized$test
+    predictor_scalarormalized <- scalar_normalize_train_test(predictor_train, predictor_test)
+    predictor_train <- predictor_scalarormalized$train
+    predictor_test <- predictor_scalarormalized$test
   }
 
   if(normalize$"between" == TRUE){
-    kidney_predictor_btwnormalized <- btwn_normalize_train_test(kidney_predictor_train, kidney_predictor_test)
-    kidney_predictor_train <- kidney_predictor_btwnormalized$train
-    kidney_predictor_test <- kidney_predictor_btwnormalized$test
+    predictor_btwnormalized <- btwn_normalize_train_test(predictor_train, predictor_test)
+    predictor_train <- predictor_btwnormalized$train
+    predictor_test <- predictor_btwnormalized$test
   }
   # btwn normalization
 
 
   result <- list()
   cat("Training data:\n")
-  result$"y_train" = kidney_value_train$y
-  result$"W_train" = kidney_predictor_train
+  result$"y_train" = train$y
+  result$"W_train" = predictor_train
 
   cat("Test data:\n")
-  result$"y_test" = kidney_value_test$y
-  result$"W_test" = kidney_predictor_test
+  result$"y_test" = test$y
+  result$"W_test" = predictor_test
 
   return(result)
 }
