@@ -1,6 +1,8 @@
 #
-rmse <- rep(NA, 3)
-names(rmse) <- c("lin", "fpca", "hybpls")
+n_simul = 10
+n_method = 2
+rmse <- matrix(NA, nrow = n_simul, ncol = n_method)
+colnames(rmse) <- c("lin", "hybpls")
 n_sample <- 170
 test.ratio <- 0.3
 n_eval <- 49
@@ -30,8 +32,8 @@ alpha
 
 
 ##### predictor generation #####
-set.seed(1)
-
+for (simul_number in 1:n_simul){
+set.seed(simul_number)
 ar_slope_1 <- 0.9
 ar_slope_2 <- 0.5
 functional_data_eval_1 <- functional_data_eval_2 <-  matrix(NA, nrow = n_sample, ncol = n_eval)
@@ -39,9 +41,9 @@ for (i in 1:n_sample){
   functional_data_eval_1[i,] <- arima.sim(model = list(ar = ar_slope_1), n = n_eval)
   functional_data_eval_2[i,] <- arima.sim(model = list(ar = ar_slope_2), n = n_eval)
 }
+functional_data_eval_1 <- functional_data_eval_1
 
-
-
+functional_data_eval_2 <- functional_data_eval_2
 #between_predictor_correlation <- matrix(rnorm(n_sample*n_basis), nrow = n_sample)
 
 
@@ -58,7 +60,7 @@ noise <- rnorm(n_sample, 0, 1/10)
 predictor_func_1 <- fda::Data2fd(argvals = eval_point, y = t(functional_data_eval_1), basisobj = my_basis)
 predictor_func_2 <- fda::Data2fd(argvals = eval_point, y = t(functional_data_eval_2), basisobj = my_basis)
 
-signal <- inprod(reg_coef_1, predictor_func_1) + inprod(reg_coef_2, predictor_func_2) + t(Z %*% alpha)
+signal <- inprod(reg_coef_1, predictor_func_1) + inprod(reg_coef_2, predictor_func_2) + t(Z %*% alpha) #+ 100
 range(inprod(reg_coef_1, predictor_func_1))
 range(inprod(reg_coef_2, predictor_func_2))
 range(t(Z %*% alpha))
@@ -89,11 +91,6 @@ simul_data_functional <- read_fd_simul(
 # W is already centered
 W_train_centered <- simul_data_functional$W_train
 y_train <- simul_data_functional$y_train
-head(W_train_centered@Z)
-
-a <- value_object$x_scalar
-
-head(add_broadcast(a, get_mean(a)) )
 
 # test data set
 W_test_centered <- simul_data_functional$W_test
@@ -102,6 +99,7 @@ y_test <- simul_data_functional$y_test
 ##############################################################################################
 # 1. scalar-on-function regression + scalar covariate
 # table to summarize the result
+
 regression_result <- matrix(NA, nrow = 2, ncol = 3)
 rownames(regression_result) <- c("train", "test")
 colnames(regression_result) <- c("f1", "f1+f2", "all")
@@ -172,7 +170,7 @@ regression_result[1,3] <- mse(predict(soft_all.fit), dataset_for_regression$y)
 regression_result[2,3] <- mse(predict(soft_all.fit, dataset_for_prediction), y_test)
 regression_result
 
-rmse[1] <- regression_result[2,3]
+rmse[simul_number,1] <- regression_result[2,3]
 rmse
 
 
@@ -180,33 +178,29 @@ rmse
 
 
 # 5.Our method: HybridPLS
+lambda <- c( #hyperparameters
+  max(abs(W_train_centered@predictor_functional_list[[1]]@J))/max(abs((W_train_centered@predictor_functional_list[[1]]@J_dotdot))),
+  max(abs(W_train_centered@predictor_functional_list[[2]]@J))/max(abs((W_train_centered@predictor_functional_list[[2]]@J_dotdot)))
+)
 
-range(W_train_centered@predictor_functional_list[[1]]@J)
-range(W_train_centered@predictor_functional_list[[1]]@J_dotdot)
 
-head(W_train_centered@predictor_functional_list[[2]]@J)
-head(W_train_centered@predictor_functional_list[[2]]@J_dotdot)
 
 #MSE trend
-L_max = 20
-lambda = c(1e-1,5*1e-1) #hyperparameters
-L_trend_0_logit <- rep(NA, L_max)
-for(L in 1:L_max){
-  #learn the model
-  pls_model_transform <- nipals_pen_hybrid(
-    W_train_centered, y_train, L, lambda, 0)
+n_iter = 40
+#lambda = c(1,1)
+iter_trend <- rep(NA, n_iter)
 
-  # predict
-  y_pred_pls <- predict_test(pls_model_transform, W_test_centered)
+#learn the model
+hybpls.fit<- nipals_pen_hybrid(W_train_centered, y_train, n_iter, lambda, 0)
 
-  #inverse transform
-
-  # calculate the mse and save
-  L_trend_0_logit[L] <- mse(y_pred_pls, y_test)
+# predict
+for (iter in 1 : n_iter){
+  y_pred_pls <- predict(hybpls.fit, W_test_centered, iter)
+  iter_trend[iter] <- mse(y_pred_pls, y_test)
+}
+plot(iter_trend, main ="hybridPLS", ylab = "MSE", xlab = "number of iteration", pch=".")
+lines(iter_trend)
+rmse[simul_number,2] <- min(iter_trend)
 }
 
-plot(L_trend_0_logit[1:L_max], main ="hybridPLS", ylab = "MSE", xlab = "number of iteration", pch=".")
-lines(L_trend_0_logit)
-rmse[3] <- min(L_trend_0_logit)
-rmse
-
+write.csv(rmse, "result.csv")

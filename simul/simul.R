@@ -176,61 +176,6 @@ regression_result
 ############### CANNOT USE TWO FUNCTIONAL PREDICTORS#########
 
 
-# FPCA predictor 1
-W_train_fd <- extract_fd(W_train_centered)
-W_test_fd <- extract_fd(W_test_centered)
-
-base.pcalist = pca.fd(W_train_fd[[1]], n_basis)
-print(base.pcalist$values)
-## train data
-discrete_data_base_train <- t( eval.fd(W_train_fd[[1]], timepoints_pre) ) #evalauation of the normalized train data at the observed timepoints
-PhiB_FPCA_base <- eval.fd(base.pcalist$harmonics, timepoints_pre) # evalauation of the FPCA components(eigenfunctions) at the observed timepoints
-dim(PhiB_FPCA_base)
-FPCA_score_base_train <- t( MASS::ginv(PhiB_FPCA_base) %*% t(discrete_data_base_train) ) #FPCA score, base, train data
-FPCA_score_base_train <- FPCA_score_base_train[,1:2]
-## test data
-discrete_data_base_test <- t( eval.fd(W_test_fd[[1]], timepoints_pre) )
-FPCA_score_base_test <- t( MASS::ginv(PhiB_FPCA_base) %*% t(discrete_data_base_test) )
-FPCA_score_base_test <- FPCA_score_base_test[,1:2]
-
-# FPCA predictor 2
-t_point_post <- (W_train_centered@predictor_functional_list[[2]]@original_t)[1,]
-post.pcalist = pca.fd(W_train_fd[[2]], n_basis)
-print(post.pcalist$values)
-## train data
-discrete_data_post_train <- t( eval.fd(W_train_fd[[2]], timepoints_post) ) #evalauation of the normalized train data at the observed timepoints
-PhiB_FPCA_post <- eval.fd(post.pcalist$harmonics, timepoints_post) # evalauation of the FPCA components(eigenfunctions) at the observed timepoints
-dim(PhiB_FPCA_post)
-FPCA_score_post_train <- t( MASS::ginv(PhiB_FPCA_post) %*% t(discrete_data_post_train) ) #FPCA score, base, train data
-FPCA_score_post_train <- FPCA_score_post_train[,1:2]
-## test data
-discrete_data_post_test <- t( eval.fd(W_test_fd[[1]], timepoints_post) )
-FPCA_score_post_test <- t( MASS::ginv(PhiB_FPCA_post) %*% t(discrete_data_post_test) )
-FPCA_score_post_test <- FPCA_score_post_test[,1:2]
-
-PCA_scalar <- prcomp(W_train_centered@Z) #learn PCA with train data
-summary(PCA_scalar)
-PCA_score_train <- (PCA_scalar$x)[,1:7]
-PCA_score_test <- (predict(PCA_scalar, W_test_centered@Z))[,1:7]
-
-#combine
-PCA_data_train <- data.frame(cbind(y_train, FPCA_score_base_train, FPCA_score_post_train, PCA_score_train))
-PCA_data_test <- data.frame(cbind(FPCA_score_base_test, FPCA_score_post_test, PCA_score_test))
-colnames(PCA_data_test) <- colnames(PCA_data_train)[-1]
-#regress
-pcareg <- lm(y_train~., data = PCA_data_train)
-#inverse transform
-
-y_pred_pls <- reponse_inverse_transform_min_max_logit(
-  predict(pcareg), y_train_logit_mean, y_train_max, y_train_min) # training fit
-mse(y_pred_pls, y_train)
-
-
-y_pred_pls <- reponse_inverse_transform_min_max_logit(
-  predict(pcareg, PCA_data_test), y_train_logit_mean, y_train_max, y_train_min) # test fit
-mse[2] <- mse(y_pred_pls, y_test)
-mse[2]
-
 
 
 

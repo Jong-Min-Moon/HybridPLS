@@ -1,11 +1,3 @@
-
-library(Matrix)
-library(MASS)
-library(pracma)
-library(jpeg)
-library(fda)
-library(splines2)
-
 #
 # inputs:
 #   W = centered predictor
@@ -19,14 +11,14 @@ library(splines2)
 # delta = predictor basis
 # nu = response basis
 # xi = pls component
-nipals_pen_hybrid <- function(W, y, L, lambda, tau) {
+nipals_pen_hybrid <- function(W, y, n_iter, lambda, tau) {
 
   # 1. initialize the storage
-  rho <- delta <- nu <- xi <- sigma <- list()
+  rho <- delta <- nu <- xi <- sigma <- eta <- list()
   E <- V_star <- eigen_val <-list()
   fitted_value_W <- fitted_value_y <-list()
   resid_y <- W_now <- list() #data for iteration
-  first_eigen_val <- mse_W <- mse_y <-rep(NA, L)
+  first_eigen_val <- mse_W <- mse_y <-rep(NA, n_iter)
 
 
 
@@ -45,7 +37,7 @@ nipals_pen_hybrid <- function(W, y, L, lambda, tau) {
   stopLoop = 0
   W_now[[1]] <- W
   y_now <- y
-  for (l in 1:L) {
+  for (l in 1:n_iter) {
     cat(paste("#############################################", "\n"))
     cat(paste(l, "th iteration", "\n"))
 
@@ -61,7 +53,7 @@ nipals_pen_hybrid <- function(W, y, L, lambda, tau) {
     fitted_value_y[[l]] <- fitted_value( y_now, nu[[l]] , rho[[l]])
     y_now <- y_now - fitted_value_y[[l]]
     resid_y[[l]] <- y_now
-    # update W
+    # update Ws
     delta[[l]] <- LSE_hybrid(W_now[[l]], rho[[l]], tau) #regression coef (W on rho)
     fitted_value_W[[l]] <- fitted_value(W_now[[l]], delta[[l]], rho[[l]])
     W_now[[l+1]] <- subtr(W_now[[l]], fitted_value_W[[l]])
@@ -76,12 +68,12 @@ nipals_pen_hybrid <- function(W, y, L, lambda, tau) {
     # STEP 3.
     sigma[[l]] <- xi[[l]]
     if (l == 1) {
-      eta <- scalar_mul(sigma[[l]], nu[[l]])
-    }else{
+      eta[[l]] <- scalar_mul(sigma[[l]], nu[[l]])
+    }else{ # if l > 1
       for (u in 1:(l - 1)){
         sigma[[l]] <- subtr( sigma[[l]], sigma[[u]], hybrid_inner_prod(delta[[u]], xi[[l]]) )
-      } #for loop: u
-      eta <- add(eta, sigma[[l]], nu[[l]])
+      } #end of u-loop
+      eta[[l]] <- add(eta[[l-1]], sigma[[l]], nu[[l]])
     }#if statement
 
     # just for records.
@@ -94,11 +86,8 @@ nipals_pen_hybrid <- function(W, y, L, lambda, tau) {
 
 
 
-
-
-
-
-  pls_object <- new("hybrid_pls_kidney",
+pls_object <- new(
+  "hybrid_pls_result",
                     eta = eta,
                     xi = xi,
                     nu = nu,
@@ -116,8 +105,48 @@ nipals_pen_hybrid <- function(W, y, L, lambda, tau) {
                     fitted_value_W = fitted_value_W,
                     fitted_value_y = fitted_value_y,
                     W_now = W_now
-
-  )
+)
   return(pls_object)
   cat(paste("#############################################", "\n"))
 }#end of the function
+
+setClass(
+  "hybrid_pls_result",
+  representation(
+    eta = "list",
+    xi = "list",
+    nu = "list",
+    rho = "list",
+    delta = "list",
+    E = "list",
+    V_star = "list",
+    eigen_val = "list",
+    first_eigen_val = "vector",
+    J_Lambda_Jpp = "dgCMatrix",
+    L_mat= "matrix",
+    resid_y = "list",
+    mse_W = 'vector',
+    mse_y = 'vector',
+    fitted_value_W = "list",
+    fitted_value_y = "list",
+    W_now = "list"
+  ))
+
+setMethod("predict", signature(object = "hybrid_pls_result"),
+          function(object, ...) {
+            max_iter = length(eta)
+            dots <- list(...)
+            if (length(dots) == 0){
+              return(
+                hybrid_inner_prod(
+                  (object@W_now)[[1]], (object@eta)[[max_iter]])
+              )
+            }else{
+              new_data <- dots[[1]]
+              iter <- dots[[2]]
+              return(
+                hybrid_inner_prod(new_data, (object@eta)[[iter]])
+              )
+            }
+          }
+)

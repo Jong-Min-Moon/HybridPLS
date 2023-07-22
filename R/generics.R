@@ -107,10 +107,6 @@ setGeneric(
   function(W, i) standardGeneric("index_sample")
   )
 
-setGeneric(
-  "predict_test",
-  function(pls_object, W_test) standardGeneric("predict_test")
-  )
 
 setGeneric(
   "extract_fd",

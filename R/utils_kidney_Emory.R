@@ -216,3 +216,5 @@ read_fd_simul <- function(
 
   return(result)
 }
+
+

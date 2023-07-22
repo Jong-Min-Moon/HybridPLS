@@ -45,4 +45,4 @@ for (i in 1:M) {
 }
 head(J_dotdot)
 head(getbasispenalty(my_basis))
-J_dotdot - getbasispenalty(my_basis)
+abs(J_dotdot - getbasispenalty(my_basis))
