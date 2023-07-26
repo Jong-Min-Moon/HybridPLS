@@ -1,3 +1,6 @@
+
+
+
 # basis_hybridPLS object
 setGeneric("is_same_basis", function(input, other)
   standardGeneric("is_same_basis"))

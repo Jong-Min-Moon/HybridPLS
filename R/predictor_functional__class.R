@@ -90,7 +90,24 @@ function(input){
 )
 
 
+setMethod("plot", signature("predictor_functional"),
+          function(x){
 
+            # Plot using base graphic engine
+            n_basis <- dim(x@predictor_functional_list[[1]]@J)[2]
+            splines <- create.bspline.basis(rangeval = c(0,1), nbasis = n_basis)
+            first <-fd(coef = t(x@predictor_functional_list[[1]]@coef), basisobj = splines)
+            second <-fd(coef = t(x@predictor_functional_list[[2]]@coef), basisobj = splines)
+
+            par(mfrow=c(2,1))
+            plot(first)
+            plot(second)
+            par(mfrow=c(1,1))
+            #y_1 <- eval.fd(x, psi_1)
+            #print(y_1)
+            #plot(x, y_1,  pch=".")
+            #plot(x, eval.fd(x, psi_2))
+          })
 
 
 # get_Lambda

@@ -1,33 +1,41 @@
-
 filter_signal <- function(
     gaussian_bandwidth, frequency_list,
     signal.original, time,
-    n.wavelet.timepoint
+    wavelet.time.length
     ){
   n.timepoint.original <- length(time)
   srate <- n.timepoint.original/(time[n.timepoint.original] - time[1])
+  n.timepoint.wavelet = srate * wavelet.time.length
   signal.concat <- c(t(signal.original))
-  n.timepoint.concat <- ncol(signal.concat)
+  n.timepoint.concat <- length(signal.concat)
   n.timepoint.conv = n.timepoint.concat + n.timepoint.wavelet - 1;
 
 
+  time.wavelet <- seq(-wavelet.time.length/2, wavelet.time.length/2, length = n.timepoint.wavelet)
 
-  wavelet.time.coverage <- n.timepoint.wavelet/n.timepoint.concat
-  time.wavelet <- seq(-wavelet.time.coverage/2, wavelet.time.coverage/2, length = n.timepoint.wavelet) # to ensure same srate
 
   wavelet.mat <- complex_morlet_wavelet(gaussian_bandwidth, frequency_list, time.wavelet)
-  wavelet.mat.padded <- cbind(wavelet.mat, matrix(0, nrow = length(frequency_list), ncol = n.timepoint.conv - n.wavelet))
+  wavelet.mat.padded <- cbind(wavelet.mat, matrix(0, nrow = length(frequency_list), ncol = n.timepoint.conv - n.timepoint.wavelet))
   wavelet.fft <- fft.rowwize(wavelet.mat.padded)
 
   signal.concat.fft <- fft(
     c(signal.concat, rep(0, (n.timepoint.conv - n.timepoint.concat)))
   )
-  signal.concat.fft <- matrix(rep(1, length(frequency_list))) %*% signal.concat.fft
+  signal.concat.fft <- t(
+    signal.concat.fft %*% matrix( rep(1, length(frequency_list)), nrow = 1)
+    )
 
   conv.result <- ifft.rowwize(wavelet.fft * signal.concat.fft)
   n.timepoint.wavelet.half = (n.timepoint.wavelet - 1)/2
-  conv.result = convolution_result_now[ (n.timepoint.wavelet.half+1) : (n.timepoint.conv - n.timepoint.wavelet.half)]
-  return(abs(conv.result))
+  conv.result <- conv.result[ ,(n.timepoint.wavelet.half+1) : (n.timepoint.conv - n.timepoint.wavelet.half)]
+  conv.result <- abs(conv.result)
+
+  result <- list()
+  for (ii in 1:length(frequency_list)){
+    freq <- frequency_list[ii]
+    result[[ii]] <- matrix(conv.result[ii,], ncol = n.timepoint.original, byrow = T)
+  }
+  return(result)
 }
 
 

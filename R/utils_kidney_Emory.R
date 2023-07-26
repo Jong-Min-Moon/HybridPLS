@@ -204,14 +204,18 @@ read_fd_simul <- function(
   }
   # btwn normalization
 
+  # y centering
+  y_mean <- mean(train$y)
+  y_train <- train$y - y_mean
+  y_test <- test$y - y_mean
 
   result <- list()
   cat("Training data:\n")
-  result$"y_train" = train$y
+  result$"y_train" = y_train
   result$"W_train" = predictor_train
 
   cat("Test data:\n")
-  result$"y_test" = test$y
+  result$"y_test" = y_test
   result$"W_test" = predictor_test
 
   return(result)

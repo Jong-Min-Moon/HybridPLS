@@ -113,7 +113,7 @@ pls_object <- new(
 setClass(
   "hybrid_pls_result",
   representation(
-    eta = "list",
+    eta = "list", #estimated regression coefficient function
     xi = "list",
     nu = "list",
     rho = "list",
