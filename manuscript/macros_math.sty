@@ -1,0 +1,333 @@
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\usepackage{ifthen}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{verbatim}
+\usepackage{xspace}
+
+%\usepackage{cleveref}
+
+%\usepackage [pagewise, mathlines, displaymath]{lineno}
+
+%begin local defs
+% \newcommand{\comment}[1]{}
+\newcommand{\bm}[1]{\mbox{\boldmath$#1$}}%
+\newcommand{\bms}[1]{\mbox{\boldmath$\scriptstyle #1$}}%
+\def\utwi#1{\lower1.0ex\hbox{${\textstyle #1}\atop{\textstyle
+			\mathaccent"707E {\hspace{1em}}}$}\raise1.0ex\hbox{\hspace{-.25em}}}
+\def\stwi#1{\lower0.5ex\hbox{${\lower0.5ex\hbox{$\scriptstyle #1$}}
+		\atop{\scriptstyle
+			\mathaccent"707E {\hspace{.8em}}}$}\raise0.5ex\hbox{\hspace{-.2em}}}
+\def\sstwi#1{\lower0.3ex\hbox{${\lower0.6ex\hbox{$
+				\scriptscriptstyle #1$}}\atop{\scriptscriptstyle
+			\mathaccent"707E {\hspace{.6em}}}$}\raise0.3ex\hbox{\hspace{-.2em}}}
+\def\utwide#1{\lower1.0ex\hbox{${\textstyle #1}\atop{\textstyle
+			\mathaccent"0365 {\hspace{1em}}}$}\raise1.0ex\hbox{\hspace{-.25em}}}
+\newcommand{\half}{\raisebox{.1em}{\footnotesize $\frac{1}{2}$}}
+\newcommand{\ssmb}[1]{_{\mbox{\scriptsize #1}}}
+
+% Proof environments -------------------------------------------------------
+\newcommand{\emindex}[1]
+{ \emph{#1} \index{#1} }
+\usepackage{epsfig}
+\newenvironment{lproof*}[1]{\par{\sc Proof of #1.}}{}
+\newenvironment{cproof}[1]{\par{\sc Proof of #1 continued.}}{\hfill $\Box$}
+\newcommand{\oReal}{\overline{\Real}}
+\newcommand{\theoremn}[2]{{\sc \tref{#1}.\ }{\it #2}}
+\renewcommand{\baselinestretch}{1.1}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[equation]{Exercise}
+\newtheorem{proposition}[equation]{Proposition}
+% to get nice proofs ...
+\newcommand{\qedsymb}{\mbox{ }~\hfill~{\rule{2mm}{2mm}}}
+\newenvironment{proof}{\begin{trivlist}
+		\item[\hspace{\labelsep}{\bf\noindent Proof: }]
+	}{\qedsymb\end{trivlist}}
+
+% Suffix values ----------------------------------------------------------
+\renewcommand{\th}{\mbox{\rm th}}
+\newcommand{\rd}{\mbox{\rm rd}}
+\newcommand{\nd}{\mbox{\rm nd}}
+\newcommand{\st}{\mbox{\rm st}}
+
+% Math operators ---------------------------------------------------------
+\DeclareMathOperator*{\argmin}{arg min}
+\DeclareMathOperator*{\argmax}{arg max}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\tr}{\operatorname{tr}}
+\def\argmax{\operatornamewithlimits{arg\,max}}
+\def\argmin{\operatornamewithlimits{arg\,min}}
+\def\esssup{\operatornamewithlimits{ess\,sup}}
+\def\essinf{\operatornamewithlimits{ess\,inf}}
+\newcommand{\lni}{\lim_{n\rightarrow\infty}}
+\newcommand{\sumn}{\sum_{i=1}^n}
+% \newcommand{\esssup}{\text{ess sup}}
+
+% Hypothesis Testing
+\newcommand{\pvalstr}{\text{$p$-value}}
+
+% Important Sets ---------------------------------------------------------
+\newcommand{\reals}{\ensuremath{\mathbb{R}}}
+\newcommand{\ints}{\ensuremath{\mathbb{Z}}}
+\newcommand{\rats}{\ensuremath{\mathbb{Q}}}
+\newcommand{\nats}{\ensuremath{\mathbb{N}}}
+\newcommand{\comps}{\ensuremath{\mathbb{C}}}
+\newcommand{\field}{\ensuremath{\mathbb{F}}}
+\newcommand{\pset}[1]{\mathcal{P}\left({#1}\right)}
+\newcommand{\stcomp}[1]{{#1}^{\mathsf{c}}}
+\newcommand{\equivclass}[1]{#1/{\sim}}
+\renewcommand{\emptyset}{\varnothing}
+
+% Important vectors ------------------------------------------------------
+\newcommand{\bzero}{\mathbf{0}}
+\newcommand{\bone}{\mathbf{1}}
+\newcommand{\btwo}{\mathbf{2}}
+
+% Linear Algebra/Matrices ------------------------------------------------
+\renewcommand{\vec}[1]{\mbox{\bf #1}}
+\newcommand{\mat}[1]{\mbox{\boldmath $#1$}}
+\newcommand{\vecs}[1]{\mbox{\scriptsize\bf #1}}
+\newcommand{\pari}{\hspace{\parindent}}
+\newcommand{\bmat}{\left(\begin{array}}
+	\newcommand{\emat}{\end{array}\right)}
+\newcommand{\bsmat}{\left[\begin{array}}
+	\newcommand{\esmat}{\end{array}\right]}
+\newcommand{\bfun}{\left\{\begin{array}{ll}}
+	\newcommand{\efun}{\end{array}\right.}
+
+% Paired Sets/Tuples ------------------------------------------------------
+\newcommand{\tuple}[1][]{\left\langle #1 \right\rangle} 
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\abs}[1]{\left\lvert #1 \right\rvert}
+\newcommand{\emptystr}{\text{\o}}
+\newcommand{\sgn}{\operatorname{sgn}} % sign function
+\newcommand{\theset}[1]{\left\lbrace #1 \right\rbrace}
+\newcommand{\sn}[2]{\ensuremath{#1\!\times\!10^{#2}}}	% #1 x 10^{#2}
+\newcommand{\theseqa}[1][]{\left( #1 \right)}
+\newcommand{\theseqb}[2]{\left( #1 \right)_{#2}}
+\newcommand{\stt}{\,:\,}
+\newcommand{\given}{\,|\,}
+
+% Equality operators ------------------------------------------------------
+\mathtoolsset{centercolon}
+\newcommand{\defined}{:=}
+\newcommand{\defines}{=:}
+\newcommand{\xapprox}[1]{\underset{#1}{\approx}}
+\newcommand{\medeq}{\!=\!}
+\newcommand{\shorteq}{\!\!=\!\!}
+
+% Other binary operators
+\newcommand{\sm}{\!-\!}
+\newcommand{\splus}{\!+\!}
+
+% Greek alphabet ----------------------------------------------------------
+\newcommand{\bhv}{\utwi{\hat{\beta}}}
+\newcommand{\Alpha}{{\rm A}}
+\newcommand{\Beta}{{\rm B}}
+\newcommand{\Eta}{{\rm H}}
+\newcommand{\Mu}{{\rm M}}
+\newcommand{\Tau}{{\rm T}}
+
+% Probability and Statistics ----------------------------------------------
+
+% Sigma fields ----
+\newcommand{\sif}{$\sigma$-field}
+\newcommand{\sifs}{$\sigma$-fields}
+\newcommand{\sfi}{$\sigma$-finite}
+
+% text shortcuts ----
+\newcommand{\iid}{\textrm{i.i.d.}\@\xspace}
+\newcommand{\as}{\textrm{a.s.}\@\xspace}
+\newcommand{\aev}{\textrm{a.e.}\@\xspace}
+\newcommand{\io}{\textrm{i.o.}\@\xspace}
+
+% Convergence ----
+\newcommand{\convas}{\overset{a.s.}{\to}}
+\newcommand{\convp}{\overset{p}{\to}}
+\newcommand{\convd}{\overset{d}{\to}}
+\newcommand{\eqd}{\overset{d}{=}}
+\newcommand{\eqas}{\overset{a.s.}{=}}
+
+% Probability/Expectation/Variance ----
+\renewcommand{\Pr}[1]{\mathbb{P}\left( #1 \right)}  % probability
+\newcommand{\PrM}{\mathbb{P}}  % probability
+\newcommand{\Exp}{\mathbb{E}}	% expectation
+\newcommand{\Ind}{\mathbb{I}}	% expectation
+\newcommand{\Var}{\operatorname{Var}}	% variance
+\newcommand{\Cov}{\operatorname{Cov}}	% covariance
+\newcommand{\Supp}{\operatorname{supp}} %support
+% \newcommand{\Exv}{\mbox{\rm E}}
+% \newcommand{\Var}{\mbox{\rm Var}}
+% \newcommand{\Cov}{\mbox{\rm Cov}}
+
+% binary operators ----
+\newcommand{\dist}{\sim}
+\newcommand{\distiid}{\overset{\textrm{\tiny\iid}}{\dist}}
+\newcommand{\distind}{\overset{\textrm{\tiny\textrm{indep}}}{\dist}}
+
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern4mu{#1#2}}}
+\newcommand\indep{\protect\mathpalette{\protect\independenT}{\perp}} % independent 
+
+% parametric distributions ----
+\newcommand{\distNamed}[1]{{\sf{#1}}}
+\newcommand{\distNorm}{\mathcal{N}}
+\newcommand{\distT}{\mathcal{T}}
+\newcommand{\distLaplace}{\distNamed{Laplace}}
+\newcommand{\distUnif}{\distNamed{Unif}}
+\newcommand{\distGam}{\distNamed{Gamma}}
+\newcommand{\distGumbel}{\distNamed{Gumbel}}
+\newcommand{\distGEV}{\distNamed{GEV}}
+\newcommand{\distCat}{\distNamed{Categorical}}
+\newcommand{\distInvGam}{\Gamma^{-1}}
+\newcommand{\distPoiss}{\distNamed{Poiss}}
+\newcommand{\distExp}{\distNamed{Exp}}
+\newcommand{\distBeta}{\distNamed{Beta}}
+\newcommand{\distBetaPrime}{\distNamed{Beta}'}
+\newcommand{\distDir}{\distNamed{Dir}}
+\newcommand{\distBinom}{\distNamed{Binom}}
+\newcommand{\distMulti}{\distNamed{Multi}}
+\newcommand{\distBern}{\distNamed{Bern}}
+\newcommand{\distGeom}{\distNamed{Geom}}
+\newcommand{\distWish}{\mathpzc{W}}
+\newcommand{\distInvWish}{\mathpzc{IW}}
+
+% non-parametric distribution
+\newcommand{\distDP}{\mathrm{DP}}
+\newcommand{\distCRP}{\mathrm{CRP}}
+\newcommand{\distPYP}{\mathrm{PY}}
+\newcommand{\distGP}{{\mathrm{GP}}} % Gaussian process
+\newcommand{\distPP}{\mathrm{PP}}
+\newcommand{\distBP}{\mathrm{BP}}
+\newcommand{\distBPP}{\mathrm{BPP}}
+\newcommand{\distGammaP}{\mathrm{\Gamma P}}
+\newcommand{\distNGammaP}{\mathrm{N\Gamma P}}
+\newcommand{\distLP}{\mathrm{LP}}
+\newcommand{\distObs}{\mathrm{Obs}}
+\newcommand{\distCRM}{\mathrm{CRM}}
+\newcommand{\distNCRM}{\mathrm{NCRM}}
+\newcommand{\distVMF}{\mathrm{vMF}}
+
+% Mathcal shortcuts
+\newcommand{\mcA}{\mathcal{A}}
+\newcommand{\mcB}{\mathcal{B}}
+\newcommand{\mcC}{\mathcal{C}}
+\newcommand{\mcD}{\mathcal{D}}
+\newcommand{\mcE}{\mathcal{E}}
+\newcommand{\mcF}{\mathcal{F}}
+\newcommand{\mcG}{\mathcal{G}}
+\newcommand{\mcH}{\mathcal{H}}
+\newcommand{\mcI}{\mathcal{I}}
+\newcommand{\mcJ}{\mathcal{J}}
+\newcommand{\mcK}{\mathcal{K}}
+\newcommand{\mcL}{\mathcal{L}}
+\newcommand{\mcM}{\mathcal{M}}
+\newcommand{\mcN}{\mathcal{N}}
+\newcommand{\mcO}{\mathcal{O}}
+\newcommand{\mcP}{\mathcal{P}}
+\newcommand{\mcQ}{\mathcal{Q}}
+\newcommand{\mcR}{\mathcal{R}}
+\newcommand{\mcS}{\mathcal{S}}
+\newcommand{\mcT}{\mathcal{T}}
+\newcommand{\mcU}{\mathcal{U}}
+\newcommand{\mcV}{\mathcal{V}}
+\newcommand{\mcW}{\mathcal{W}}
+\newcommand{\mcX}{\mathcal{X}}
+\newcommand{\mcY}{\mathcal{Y}}
+\newcommand{\mcZ}{\mathcal{Z}}
+% \newcommand{\A}{{\cal A}}
+% \newcommand{\B}{{\cal B}}
+% \newcommand{\C}{{\cal C}}
+% \newcommand{\D}{{\cal D}}
+% \newcommand{\E}{{\mathbb E}}
+% \newcommand{\F}{{\cal F}}
+% \newcommand{\G}{{\cal G}}
+% \renewcommand{\H}{{\cal H}}
+% \newcommand{\I}{{\cal I}}
+% \newcommand{\J}{{\cal J}}
+% \renewcommand{\L}{{\cal L}}
+% \newcommand{\M}{{\cal M}}
+% \newcommand{\N}{{\cal N}}
+% \renewcommand{\O}{{\cal O}}
+% \renewcommand{\P}{{\cal P}}
+% \newcommand{\Q}{{\cal Q}}
+% \newcommand{\R}{{\mathbb R}}
+% \renewcommand{\S}{{\cal S}}
+% \newcommand{\T}{{\cal T}}
+% \newcommand{\U}{{\cal U}}
+% \newcommand{\V}{{\cal V}}
+% \newcommand{\W}{{\cal W}}
+% \newcommand{\X}{{\cal X}}
+% \newcommand{\Y}{{\cal Y}}
+% \newcommand{\Z}{{\cal Z}}
+
+% Bar shortcuts
+\newcommand{\Xbar}{\overline{X}}
+\newcommand{\xbar}{\overline{x}}
+\newcommand{\Ybar}{\overline{Y}}
+\newcommand{\ybar}{\overline{y}}
+
+% Math Bold Font shortcuts
+\newcommand{\bfa}{\mathbf{a}}
+\newcommand{\bfb}{\mathbf{b}}
+\newcommand{\bfc}{\mathbf{c}}
+\newcommand{\bfd}{\mathbf{d}}
+\newcommand{\bfe}{\mathbf{e}}
+\newcommand{\bff}{\mathbf{f}}
+\newcommand{\bfg}{\mathbf{g}}
+\newcommand{\bfh}{\mathbf{h}}
+\newcommand{\bfi}{\mathbf{i}}
+\newcommand{\bfj}{\mathbf{j}}
+\newcommand{\bfk}{\mathbf{k}}
+\newcommand{\bfl}{\mathbf{l}}
+\newcommand{\bfm}{\mathbf{m}}
+\newcommand{\bfn}{\mathbf{n}}
+\newcommand{\bfo}{\mathbf{o}}
+\newcommand{\bfp}{\mathbf{p}}
+\newcommand{\bfq}{\mathbf{q}}
+\newcommand{\bfr}{\mathbf{r}}
+\newcommand{\bfs}{\mathbf{s}}
+\newcommand{\bft}{\mathbf{t}}
+\newcommand{\bfu}{\mathbf{u}}
+\newcommand{\bfv}{\mathbf{v}}
+\newcommand{\bfw}{\mathbf{w}}
+\newcommand{\bfx}{\mathbf{x}}
+\newcommand{\bfy}{\mathbf{y}}
+\newcommand{\bfz}{\mathbf{z}}
+\newcommand{\bfA}{\mathbf{A}}
+\newcommand{\bfB}{\mathbf{B}}
+\newcommand{\bfC}{\mathbf{C}}
+\newcommand{\bfD}{\mathbf{D}}
+\newcommand{\bfE}{\mathbf{E}}
+\newcommand{\bfF}{\mathbf{F}}
+\newcommand{\bfG}{\mathbf{G}}
+\newcommand{\bfH}{\mathbf{H}}
+\newcommand{\bfI}{\mathbf{I}}
+\newcommand{\bfJ}{\mathbf{J}}
+\newcommand{\bfK}{\mathbf{K}}
+\newcommand{\bfL}{\mathbf{L}}
+\newcommand{\bfM}{\mathbf{M}}
+\newcommand{\bfN}{\mathbf{N}}
+\newcommand{\bfO}{\mathbf{O}}
+\newcommand{\bfP}{\mathbf{P}}
+\newcommand{\bfQ}{\mathbf{Q}}
+\newcommand{\bfR}{\mathbf{R}}
+\newcommand{\bfS}{\mathbf{S}}
+\newcommand{\bfT}{\mathbf{T}}
+\newcommand{\bfU}{\mathbf{U}}
+\newcommand{\bfV}{\mathbf{V}}
+\newcommand{\bfW}{\mathbf{W}}
+\newcommand{\bfX}{\mathbf{X}}
+\newcommand{\bfY}{\mathbf{Y}}
+\newcommand{\bfZ}{\mathbf{Z}}
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}

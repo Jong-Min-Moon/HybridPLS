@@ -1,0 +1,28 @@
+% Adapted from: https://inst.eecs.berkeley.edu/~cs294-8/sp03/Materials/scribe.tex
+%
+% The following commands set up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[2]{
+	\begin{table}\centering
+		\begin{tabular*}{6.5in}{@{\extracolsep{\fill}}|llr|} \hline
+			36-743/744 & \hspace*{0.5 in} & Fall 2019 \\
+			(Some) Statistical Aspects of Reproducibility  & & \\
+			& & \\
+			\multicolumn{3}{|c|}{
+				{{\large {\bf #1}}}} \\
+			& & \\Lecturer : Aaditya Ramdas& Scribe: #2 &\\ \hline
+		\end{tabular*}
+	\end{table}
+}

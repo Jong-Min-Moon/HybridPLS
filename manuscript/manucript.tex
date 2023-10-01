@@ -1,0 +1,206 @@
+\documentclass[preprint,12pt,authoryear]{elsarticle}
+
+%opening
+
+
+
+% custom commands for convenience
+\newcommand{\nGaussian}{J}
+
+\newcommand{\mE}{\mathbb{E}} %expectation
+
+\newcommand{\vecBold}[1]{\boldsymbol{#1}} %vector notation
+\newcommand{\rvGeneric}{X} % random variable X
+\newcommand{\rvGenericRealized}{x}
+\newcommand{\rvCodomainGeneric}{\mathcal{\rvGeneric}} % support of the distribution of X
+\newcommand{\rvSigmaFieldGeneric}{\mathcal{F}} % sigma field related to the codomain of X
+% private versions
+\newcommand{\rvGenericPriv}{\tilde{\rvGeneric}} % 
+\newcommand{\rvCodomainGenericPriv}{\tilde{\rvCodomainGeneric}}
+\newcommand{\rvSigmaFieldGenericPriv}{\tilde{\rvSigmaFieldGeneric}}
+\newcommand{\rVecGeneric}{\vecBold{\rvGeneric}}
+\newcommand{\rVecGenericRealized}{\vecBold{\rvGenericRealized}}
+\newcommand{\rvOne}{Y}
+\newcommand{\rvTwo}{Z}
+\newcommand{\randomVecOne}{\vecBold{\rvOne}}
+\newcommand{\randomVecTwo}{\vecBold{\rvTwo}}
+\newcommand{\distVecOne}{P_{\randomVecOne}}
+\newcommand{\distVecTwo}{P_{\randomVecTwo}}
+\newcommand{\jointdist}{P_{\rVecGeneric, \rvOne}}
+\newcommand{\jointdistOversample}{P_{\rVecGeneric_s, \rvOne_s}}
+
+\newcommand{\classifier}{g(\rVecGenericRealized)}
+
+
+\newcommand{\sampleSize}{n}
+\newcommand{\sampleSizeMinor}{\sampleSize^{min}}
+\newcommand{\sampleSizeMajor}{\sampleSize^{maj}}
+
+\newcommand{\sampleIndexOne}{i}
+\newcommand{\dimDensity}{d}
+
+\newcommand{\groupIndexPopulation}{j}
+\newcommand{\nGroupPopulation}{J}
+\newcommand{\mixtureWeight}{w}
+
+% number sets
+\newcommand{\numbersetNonnegInt}{\mathbb{N}_0}
+\newcommand{\numbersetReal}{\mathbb{R}} %set of real numbers
+
+
+\newcommand{\x}{\boldsymbol{x}}
+\newcommand{\X}{\boldsymbol{X}}
+\newcommand{\pr}{\mathbb{P}}
+\newcommand{\inputDomain}{\mathbb{R}^p}
+
+%random variables
+\newcommand{\jointrv}{(\X, Y)}
+\newcommand{\Xs}{\mathbf{X_s}}
+
+%distributions
+
+
+%indicator function
+\newcommand{\indicator}[1]{\mathds{1} \left( #1 \right) }
+
+%densities
+\newcommand{\densityMinor}{f^{min}(\rVecGenericRealized)}
+\newcommand{\densityMajor}{f^{maj}(\rVecGenericRealized)}
+\newcommand{\postSmall}{h(\x)}
+\newcommand{\postLarge}{h(\X)}
+\newcommand{\postSmallNew}{h_s(\x)}
+\newcommand{\postLargeNew}{h_s(\X)}
+
+\newcommand{\priorMin}{\pi^{min}}
+\newcommand{\priorMaj}{\pi^{maj}}
+\newcommand{\priorMinNew}{\pi_s^{min}}
+\newcommand{\priorMajNew}{\pi_s^{maj}}
+
+
+%costs
+\newcommand{\mMin}{m^{min}}
+\newcommand{\mMaj}{m^{maj}}
+\newcommand{\mog}{m^{og}}
+\newcommand{\msyn}{m^{syn}}
+\newcommand{\nsyn}{\sampleSize^{syn}}
+%number of samples
+
+
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+%% The amssymb package provides various useful mathematical symbols
+%for algorithm box
+\usepackage{algorithm} % for algorithm box
+\usepackage{algpseudocode} % for algorithm box
+
+%for figures
+\usepackage{tikz}
+\usepackage{subfigure} % subfigures
+\usepackage{graphics}
+\usepackage{natbib}%citet, citep
+\usepackage{ulem} %cancelation
+\usepackage{amssymb}
+\usepackage{latexsym}
+\usepackage{latexsym}
+\usepackage[tbtags]{amsmath}
+\usepackage{epsfig}
+\usepackage{amscd}
+\usepackage{amsthm}
+\usepackage{multirow}
+
+\usepackage{booktabs} % for fancy tables
+\usepackage{adjustbox} % table size
+\usepackage{makecell} % linebreak inside a cell
+%\usepackage{authblk} % authors
+
+\usepackage{float} % table position
+\usepackage{footmisc}
+\usepackage{color}
+\usepackage{enumerate}
+\usepackage{bm}
+\usepackage{setspace}
+\usepackage{xparse}
+\usepackage{tcolorbox}
+\usepackage{lipsum}
+\usepackage{blindtext}
+\usepackage{mathtools}
+\usepackage[titletoc,title]{appendix}
+\usepackage[T1]{fontenc}
+\usepackage{dsfont}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{dsfont} %for indicator function
+\usepackage[mathscr]{euscript}
+
+% Copied from mathrsfs.sty
+\DeclareSymbolFont{rsfs}{U}{rsfs}{m}{n}
+\DeclareSymbolFontAlphabet{\mathscrsfs}{rsfs}
+
+
+\usepackage{multirow}
+\usepackage{bbm} % for indicator function
+\usepackage{algorithm} % for algorithm box
+\usepackage{algpseudocode} % for algorithm box
+\usepackage{hyperref}[] % hyperlink
+
+\hypersetup{
+	pdfpagemode=UseOutlines,
+	colorlinks = true,
+	linkcolor = blue, %Colour of internal links
+	filecolor = magenta,
+	urlcolor = blue, %Colour for external hyperlinks
+	citecolor = blue %Colour of citations
+}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{property}{Property}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{remark}{Remark}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{assumption}{Assumption}[section]
+
+
+
+
+
+\begin{document}
+	\title{Weighted Support Vector Machine for Extremely Imbalanced Data \tnoteref{t1}}
+	\journal{Computational Statistics \& Data Analysis}
+	\author{Jongmin Mun\fnref{fn1}}
+	\ead{jongmin.mun@marshall.usc.edu}
+	
+	
+	
+	% authorsip
+	\author{Sungwan Bang\fnref{fn2}}
+	\ead{wan1365@gmail.com}
+	\author{Jaeoh Kim\corref{cor1}\fnref{fn3}}
+	\cortext[cor1]{Corresponding author.}
+	
+	
+	
+	\ead{jaeoh.k@inha.ac.kr}
+	\affiliation[fn1]{organization={Data Sciences and Operations Department, Marshall School of Business, University of Southern California}}
+	%Department and Organization
+	%addressline={}, city={Seoul}, postcode={}, country={Republic of Korea}}
+
+\affiliation[fn2]{organization={Department of Mathematics, Korea Military Academy}}%Department and Organization
+%addressline={P.O.Box 77, Nowan-gu}, city={Seoul}, country={Republic of Korea}}
+
+\affiliation[fn3]{organization={Department of Data Science, Inha University}}%Department and Organization
+%addressline={100 Inha-ro, Michuhol-gu}, city={Incheon},            postcode={22212},  country={Republic of Korea}}
+\tnotetext[t1]{This research is the results of the research project funded by the National Science Foundation.}
+%\maketitle
+
+Conducting FPCA separately for each element of multivariate functional data can result in nonnegligible correlation between FPCA scores of each element.
+Therefore for our baseline method, we apply multivariate functional FPCA~\citep{happ_multivariate_2018} to our bivariate functional data. To the best of our knowledge, there is no existing method that consider joint variation between bivariate functional data and scalar covariates.
+\bibliographystyle{elsarticle-harv} 
+\bibliography{numerical_manuscript.bib}
+\end{document}
